@@ -1,0 +1,24 @@
+# dependencies
+node_modules/
+
+# build outputs
+client/.next/
+client/out/
+client/build/
+server/dist/
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# env files
+.env
+.env.*
+server/.env
+server/.env.*
+
+# misc
+.DS_Store
+*.pem
