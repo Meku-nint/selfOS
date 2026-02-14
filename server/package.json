@@ -1,17 +1,26 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "SelfOS Backend API",
+  "main": "src/index.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon",
+    "start": "node src/index.js",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:studio": "prisma studio",
+    "db:seed": "node src/seed.js"
   },
-  "keywords": [],
+  "keywords": [
+    "task-management",
+    "productivity",
+    "pwa"
+  ],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
   "dependencies": {
-    "@prisma/client": "^7.4.0",
+    "@prisma/client": "^5.22.0",
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.6",
     "dotenv": "^17.3.1",
@@ -21,12 +30,11 @@
     "nodemailer": "^8.0.1",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
-    "pg": "^8.18.0",
     "socket.io": "^4.8.3",
     "web-push": "^3.6.7"
   },
   "devDependencies": {
     "nodemon": "^3.1.11",
-    "prisma": "^7.4.0"
+    "prisma": "^5.22.0"
   }
 }
