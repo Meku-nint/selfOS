@@ -1,0 +1,134 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  firstName     String
+  lastName      String
+  passwordHash  String?   // null for OAuth users
+  avatar        String?
+  isVerified    Boolean   @default(false)
+  otpCode       String?
+  otpExpiresAt  DateTime?
+  googleId      String?   @unique
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  tasks         Task[]
+  reminders     Reminder[]
+  journalEntries JournalEntry[]
+  userStreaks    UserStreak[]
+
+  @@map("users")
+}
+
+model Category {
+  id          String @id @default(cuid())
+  name        String @unique
+  color       String @default("#6366f1")
+  icon        String
+  createdAt   DateTime @default(now())
+
+  // Relations
+  tasks Task[]
+
+  @@map("categories")
+}
+
+model Task {
+  id          String      @id @default(cuid())
+  title       String
+  description String?
+  priority    Priority    @default(MEDIUM)
+  status      TaskStatus  @default(PENDING)
+  dueDate     DateTime?
+  completedAt DateTime?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  // Relations
+  userId      String
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  categoryId  String?
+  category    Category?   @relation(fields: [categoryId], references: [id])
+  reminders   Reminder[]
+
+  @@map("tasks")
+}
+
+model Reminder {
+  id          String           @id @default(cuid())
+  title       String
+  message     String
+  scheduledAt DateTime
+  isSent      Boolean          @default(false)
+  type        ReminderType     @default(NOTIFICATION)
+  createdAt   DateTime         @default(now())
+
+  // Relations
+  taskId      String
+  task        Task             @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("reminders")
+}
+
+model JournalEntry {
+  id        String   @id @default(cuid())
+  title     String?
+  content   String
+  mood      Int?     // 1-5 scale for mood tracking
+  tags      String[] // Array of tags
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("journal_entries")
+}
+
+model UserStreak {
+  id            String   @id @default(cuid())
+  streakDate    DateTime @default(now()) @db.Date
+  tasksCompleted Int      @default(0)
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+
+  // Relations
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, streakDate])
+  @@map("user_streaks")
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum TaskStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum ReminderType {
+  NOTIFICATION
+  EMAIL
+  BOTH
+}
