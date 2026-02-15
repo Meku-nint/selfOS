@@ -3,6 +3,104 @@ import { prisma } from '../config/database.js';
 
 const router = express.Router();
 
+function startOfDay(date) {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+}
+
+function endOfDay(date) {
+  const start = startOfDay(date);
+  start.setDate(start.getDate() + 1);
+  return start;
+}
+
+function computeScore(metric) {
+  const tasksRatio = metric.tasksPlanned > 0
+    ? metric.tasksCompleted / metric.tasksPlanned
+    : metric.tasksCompleted > 0
+      ? 1
+      : 0;
+  const streakScore = metric.streakActive ? 1 : 0;
+  const journalScore = Math.min(metric.journalEntries, 1);
+  const focusScore = Math.min(metric.focusMinutes / 120, 1);
+  const weighted =
+    0.4 * tasksRatio +
+    0.25 * streakScore +
+    0.2 * focusScore +
+    0.15 * journalScore;
+  return Math.max(0, Math.min(1, Number(weighted.toFixed(3))));
+}
+
+async function updateDailyMetricForCompletion(userId, completedAt) {
+  const dayStart = startOfDay(completedAt);
+  const dayEnd = endOfDay(completedAt);
+
+  const [tasksPlanned, tasksCompleted, existingMetric] = await Promise.all([
+    prisma.task.count({
+      where: {
+        userId,
+        dueDate: {
+          gte: dayStart,
+          lt: dayEnd
+        }
+      }
+    }),
+    prisma.task.count({
+      where: {
+        userId,
+        status: 'COMPLETED',
+        completedAt: {
+          gte: dayStart,
+          lt: dayEnd
+        }
+      }
+    }),
+    prisma.dailyMetric.findUnique({
+      where: {
+        userId_metricDate: {
+          userId,
+          metricDate: dayStart
+        }
+      }
+    })
+  ]);
+
+  const metricSnapshot = {
+    tasksPlanned,
+    tasksCompleted,
+    journalEntries: existingMetric?.journalEntries ?? 0,
+    focusMinutes: existingMetric?.focusMinutes ?? 0,
+    streakActive: tasksCompleted > 0 || existingMetric?.streakActive || false
+  };
+
+  const score = computeScore(metricSnapshot);
+
+  if (existingMetric) {
+    await prisma.dailyMetric.update({
+      where: { id: existingMetric.id },
+      data: {
+        tasksPlanned,
+        tasksCompleted,
+        streakActive: metricSnapshot.streakActive,
+        score
+      }
+    });
+    return;
+  }
+
+  await prisma.dailyMetric.create({
+    data: {
+      userId,
+      metricDate: dayStart,
+      tasksPlanned,
+      tasksCompleted,
+      journalEntries: metricSnapshot.journalEntries,
+      focusMinutes: metricSnapshot.focusMinutes,
+      streakActive: metricSnapshot.streakActive,
+      score
+    }
+  });
+}
+
 // Get all tasks for user
 router.get('/', async (req, res) => {
   try {
@@ -103,6 +201,10 @@ router.put('/:id', async (req, res) => {
         reminders: true
       }
     });
+
+    if (status === 'COMPLETED' && task.status !== 'COMPLETED') {
+      await updateDailyMetricForCompletion(userId, updatedTask.completedAt || new Date());
+    }
 
     res.json(updatedTask);
   } catch (error) {

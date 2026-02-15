@@ -9,6 +9,7 @@ import taskRoutes from './routes/tasks.js';
 import userRoutes from './routes/users.js';
 import reminderRoutes from './routes/reminders.js';
 import journalRoutes from './routes/journal.js';
+import dashboardRoutes from './routes/dashboard.js';
 import { initializeDatabase } from './config/database.js';
 import { authenticateToken } from './middleware/auth.js';
 import { setupSocketHandlers } from './services/socketService.js';
@@ -38,6 +39,7 @@ app.use('/api/tasks', authenticateToken, taskRoutes);
 app.use('/api/users', authenticateToken, userRoutes);
 app.use('/api/reminders', authenticateToken, reminderRoutes);
 app.use('/api/journal', authenticateToken, journalRoutes);
+app.use('/api/dashboard', authenticateToken, dashboardRoutes);
 
 // Health check
 app.get('/health', (req, res) => {
