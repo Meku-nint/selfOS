@@ -3,6 +3,7 @@ import { prisma } from '../config/database.js';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
 
+// Runs on every request to routes that are wrapped with authenticateToken in index.js.
 export function authenticateToken(req, res, next) {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
@@ -11,6 +12,7 @@ export function authenticateToken(req, res, next) {
     return res.status(401).json({ message: 'Access token required' });
   }
 
+  // Verify JWT and load the user for downstream handlers.
   jwt.verify(token, JWT_SECRET, async (err, decoded) => {
     if (err) {
       return res.status(403).json({ message: 'Invalid or expired token' });
@@ -26,6 +28,7 @@ export function authenticateToken(req, res, next) {
         return res.status(403).json({ message: 'User not found' });
       }
 
+      // Attach the user to the request so route handlers can use it.
       req.user = user;
       next();
     } catch (error) {
