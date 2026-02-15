@@ -7,6 +7,10 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+//////////////////////////////////////////////////////
+// USER
+//////////////////////////////////////////////////////
+
 model User {
   id            String    @id @default(cuid())
   email         String    @unique
@@ -18,30 +22,42 @@ model User {
   otpCode       String?
   otpExpiresAt  DateTime?
   googleId      String?   @unique
+
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
   // Relations
-  tasks         Task[]
-  reminders     Reminder[]
-  journalEntries JournalEntry[]
-  userStreaks    UserStreak[]
+  tasks           Task[]
+  reminders       Reminder[]
+  journalEntries  JournalEntry[]
+  userStreaks     UserStreak[]
+  dailyMetrics    DailyMetric[]
+  quotes          Quote[]
+  resources       Resource[]
+  chatSessions    ChatSession[]
 
   @@map("users")
 }
 
-model Category {
-  id          String @id @default(cuid())
-  name        String @unique
-  color       String @default("#6366f1")
-  icon        String
-  createdAt   DateTime @default(now())
+//////////////////////////////////////////////////////
+// CATEGORY
+//////////////////////////////////////////////////////
 
-  // Relations
-  tasks Task[]
+model Category {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  color     String   @default("#6366f1")
+  icon      String
+  createdAt DateTime @default(now())
+
+  tasks     Task[]
 
   @@map("categories")
 }
+
+//////////////////////////////////////////////////////
+// TASK
+//////////////////////////////////////////////////////
 
 model Task {
   id          String      @id @default(cuid())
@@ -51,67 +67,205 @@ model Task {
   status      TaskStatus  @default(PENDING)
   dueDate     DateTime?
   completedAt DateTime?
+
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 
-  // Relations
   userId      String
   user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   categoryId  String?
   category    Category?   @relation(fields: [categoryId], references: [id])
+
   reminders   Reminder[]
 
+  @@index([userId])
   @@map("tasks")
 }
 
+//////////////////////////////////////////////////////
+// REMINDER
+//////////////////////////////////////////////////////
+
 model Reminder {
-  id          String           @id @default(cuid())
+  id          String       @id @default(cuid())
   title       String
   message     String
   scheduledAt DateTime
-  isSent      Boolean          @default(false)
-  type        ReminderType     @default(NOTIFICATION)
-  createdAt   DateTime         @default(now())
+  isSent      Boolean      @default(false)
+  type        ReminderType @default(NOTIFICATION)
 
-  // Relations
-  taskId      String
-  task        Task             @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  createdAt   DateTime     @default(now())
+
+  taskId      String?
+  task        Task?        @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
   userId      String
-  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@index([userId])
   @@map("reminders")
 }
+
+//////////////////////////////////////////////////////
+// JOURNAL
+//////////////////////////////////////////////////////
 
 model JournalEntry {
   id        String   @id @default(cuid())
   title     String?
   content   String
-  mood      Int?     // 1-5 scale for mood tracking
-  tags      String[] // Array of tags
+  mood      Int?     // 1-5 scale
+  tags      String[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  // Relations
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@index([userId])
   @@map("journal_entries")
 }
 
-model UserStreak {
-  id            String   @id @default(cuid())
-  streakDate    DateTime @default(now()) @db.Date
-  tasksCompleted Int      @default(0)
-  isActive      Boolean  @default(true)
-  createdAt     DateTime @default(now())
+//////////////////////////////////////////////////////
+// STREAK TRACKING
+//////////////////////////////////////////////////////
 
-  // Relations
-  userId        String
-  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+model UserStreak {
+  id             String   @id @default(cuid())
+  streakDate     DateTime @db.Date
+  tasksCompleted Int      @default(0)
+  isActive       Boolean  @default(true)
+
+  createdAt      DateTime @default(now())
+
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, streakDate])
+  @@index([userId, streakDate])
   @@map("user_streaks")
 }
+
+//////////////////////////////////////////////////////
+// DAILY METRICS (🔥 HEATMAP + ANALYTICS CORE)
+//////////////////////////////////////////////////////
+
+model DailyMetric {
+  id                 String   @id @default(cuid())
+  metricDate         DateTime @db.Date
+
+  // Productivity metrics
+  tasksPlanned       Int      @default(0)
+  tasksCompleted     Int      @default(0)
+  journalEntries     Int      @default(0)
+  focusMinutes       Int      @default(0)
+
+  // Streak
+  streakActive       Boolean  @default(false)
+
+  // Mood
+  moodAverage        Int?
+
+  // 🔥 Contribution Heatmap Core
+  contributionCount  Int      @default(0)
+
+  // 🔥 Optional weighted score (advanced future logic)
+  weightedScore      Int      @default(0)
+
+  // Smart scoring system
+  score              Float    @default(0)
+  scoreVersion       Int      @default(1)
+
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  userId             String
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, metricDate])
+  @@index([userId, metricDate])
+  @@map("daily_metrics")
+}
+
+//////////////////////////////////////////////////////
+// QUOTES
+//////////////////////////////////////////////////////
+
+model Quote {
+  id        String   @id @default(cuid())
+  text      String
+  author    String?
+  source    String?
+  isDaily   Boolean  @default(false)
+
+  createdAt DateTime @default(now())
+
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("quotes")
+}
+
+//////////////////////////////////////////////////////
+// RESOURCES
+//////////////////////////////////////////////////////
+
+model Resource {
+  id          String       @id @default(cuid())
+  type        ResourceType
+  title       String
+  author      String?
+  focus       String?
+  description String?
+  url         String?
+
+  createdAt   DateTime     @default(now())
+
+  userId      String
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("resources")
+}
+
+//////////////////////////////////////////////////////
+// CHAT SYSTEM
+//////////////////////////////////////////////////////
+
+model ChatSession {
+  id        String        @id @default(cuid())
+  title     String?
+
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  userId    String
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  messages  ChatMessage[]
+
+  @@index([userId])
+  @@map("chat_sessions")
+}
+
+model ChatMessage {
+  id        String    @id @default(cuid())
+  role      ChatRole
+  content   String
+
+  createdAt DateTime  @default(now())
+
+  sessionId String
+  session   ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId])
+  @@map("chat_messages")
+}
+
+//////////////////////////////////////////////////////
+// ENUMS
+//////////////////////////////////////////////////////
 
 enum Priority {
   LOW
@@ -131,4 +285,18 @@ enum ReminderType {
   NOTIFICATION
   EMAIL
   BOTH
+}
+
+enum ResourceType {
+  BOOK
+  SPEAKER
+  ARTICLE
+  PODCAST
+  VIDEO
+}
+
+enum ChatRole {
+  USER
+  ASSISTANT
+  SYSTEM
 }
