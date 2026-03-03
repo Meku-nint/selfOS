@@ -9,7 +9,9 @@ const router = express.Router();
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
-const GOOGLE_CALLBACK_URL = process.env.GOOGLE_CALLBACK_URL || 'http://localhost:4000/auth/google/callback';
+const SERVER_PORT = process.env.PORT || '5000';
+const SERVER_URL = process.env.SERVER_URL || `http://localhost:${SERVER_PORT}`;
+const GOOGLE_CALLBACK_URL = process.env.GOOGLE_CALLBACK_URL || `${SERVER_URL}/auth/google/callback`;
 const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:3000';
 
 if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET && !globalThis._googleStrategyConfigured) {
@@ -193,11 +195,11 @@ router.get('/google', passport.authenticate('google', { scope: ['profile', 'emai
 
 router.get(
   '/google/callback',
-  passport.authenticate('google', { session: false, failureRedirect: `${CLIENT_URL}/?error=google_auth_failed` }),
+  passport.authenticate('google', { session: false, failureRedirect: `${CLIENT_URL}/login?error=google_auth_failed` }),
   (req, res) => {
     const user = req.user;
     const token = generateToken(user.id);
-    const redirectUrl = new URL(CLIENT_URL);
+    const redirectUrl = new URL('/login', CLIENT_URL);
     redirectUrl.searchParams.set('token', token);
     res.redirect(redirectUrl.toString());
   }
