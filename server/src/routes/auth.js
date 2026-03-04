@@ -7,12 +7,40 @@ import { generateToken, generateOTP } from '../middleware/auth.js';
 
 const router = express.Router();
 
+function normalizeBaseUrl(rawUrl, fallbackUrl, protocol = 'https') {
+  const value = (rawUrl || '').trim();
+  const fallback = (fallbackUrl || '').trim();
+
+  const resolved = value || fallback;
+  if (!resolved) return '';
+
+  const withProtocol = /^https?:\/\//i.test(resolved)
+    ? resolved
+    : `${protocol}://${resolved}`;
+
+  return withProtocol.replace(/\/+$/, '');
+}
+
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 const SERVER_PORT = process.env.PORT || '4000';
-const SERVER_URL = process.env.SERVER_URL || `http://localhost:${SERVER_PORT}`;
-const GOOGLE_CALLBACK_URL = process.env.GOOGLE_CALLBACK_URL || `${SERVER_URL}/auth/google/callback`;
-const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:3000';
+const isProduction = process.env.NODE_ENV === 'production';
+const urlProtocol = isProduction ? 'https' : 'http';
+const SERVER_URL = normalizeBaseUrl(
+  process.env.SERVER_URL,
+  `localhost:${SERVER_PORT}`,
+  urlProtocol
+);
+const CLIENT_URL = normalizeBaseUrl(
+  process.env.CLIENT_URL,
+  'localhost:3000',
+  urlProtocol
+);
+const GOOGLE_CALLBACK_URL = normalizeBaseUrl(
+  process.env.GOOGLE_CALLBACK_URL,
+  `${SERVER_URL}/auth/google/callback`,
+  urlProtocol
+);
 
 if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET && !globalThis._googleStrategyConfigured) {
   passport.use(
