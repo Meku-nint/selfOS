@@ -7,7 +7,21 @@ import { useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
 import { getAuthToken, setAuthToken } from "../lib/auth";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+function normalizeBaseUrl(rawUrl: string | undefined, fallbackUrl: string, protocol: "http" | "https" = "https") {
+  const value = (rawUrl || "").trim();
+  const fallback = (fallbackUrl || "").trim();
+  const resolved = value || fallback;
+
+  if (!resolved) return "";
+
+  const withProtocol = /^https?:\/\//i.test(resolved)
+    ? resolved
+    : `${protocol}://${resolved}`;
+
+  return withProtocol.replace(/\/+$/, "");
+}
+
+const API_URL = normalizeBaseUrl(process.env.NEXT_PUBLIC_API_URL, "http://localhost:4000", "https");
 type View = "login" | "register" | "verify";
 
 export default function LoginPage() {
