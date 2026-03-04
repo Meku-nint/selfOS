@@ -473,11 +473,11 @@ export default function TodoPage() {
         <div className="mb-8">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div className="flex items-center gap-3">
-              <div className="rounded-2xl bg-linear-to-br from-indigo-500 to-purple-500 p-3 shadow-lg shadow-indigo-200/50">
+              <div className="rounded-2xl bg-linear-to-br from-black to-black p-3 shadow-lg shadow-indigo-200/50">
                 <Target className="h-8 w-8 text-white" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold bg-linear-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent md:text-4xl">
+                <h1 className="text-3xl font-semibold tracking-tight text-slate-900">
                   Priority Dashboard
                 </h1>
                 <p className="mt-1 text-sm text-slate-600 md:text-base">
@@ -608,7 +608,7 @@ export default function TodoPage() {
             <button
               type="submit"
               disabled={actionLoading === "create"}
-              className="flex items-center gap-2 rounded-xl bg-linear-to-r from-indigo-600 to-purple-600 px-6 py-3 text-sm font-semibold text-white transition-all hover:from-indigo-700 hover:to-purple-700 hover:shadow-lg hover:shadow-indigo-200/50 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex items-center gap-2 rounded bg-black px-6 py-3 text-sm font-semibold text-white transition-all hover:from-indigo-700 hover:to-purple-700 hover:shadow-lg hover:shadow-indigo-200/50 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {actionLoading === "create" ? (
                 <>
