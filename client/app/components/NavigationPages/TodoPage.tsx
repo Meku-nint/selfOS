@@ -467,20 +467,20 @@ export default function TodoPage() {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-indigo-50 via-white to-purple-50">
+    <div className="min-h-screen bg-stone-50">
       <div className="mx-auto max-w-7xl px-4 py-8">
         {/* Header with Stats */}
         <div className="mb-8">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div className="flex items-center gap-3">
-              <div className="rounded-2xl bg-linear-to-br from-black to-black p-3 shadow-lg shadow-indigo-200/50">
+              <div className="rounded-xl bg-stone-900 p-3 shadow-sm">
                 <Target className="h-8 w-8 text-white" />
               </div>
               <div>
-                <h1 className="text-3xl font-semibold tracking-tight text-slate-900">
+                <h1 className="text-3xl font-semibold tracking-tight text-stone-900">
                   Priority Dashboard
                 </h1>
-                <p className="mt-1 text-sm text-slate-600 md:text-base">
+                <p className="mt-1 text-sm text-stone-600 md:text-base">
                   Plan clearly, execute daily, and track real progress.
                 </p>
               </div>
@@ -488,29 +488,29 @@ export default function TodoPage() {
             
             {/* Quick Stats */}
             <div className="grid w-full grid-cols-3 gap-2 sm:gap-3 lg:w-auto">
-              <div className="rounded-xl border border-indigo-100 bg-white/70 px-3 py-2 text-center sm:px-4">
-                <div className="text-lg font-bold text-indigo-600 sm:text-2xl">{stats.completionRate}%</div>
-                <div className="text-[11px] text-slate-500 sm:text-xs">Completion rate</div>
+              <div className="rounded-xl border border-stone-200 bg-white px-3 py-2 text-center sm:px-4">
+                <div className="text-lg font-semibold text-stone-900 sm:text-2xl">{stats.completionRate}%</div>
+                <div className="text-[11px] text-stone-500 sm:text-xs">Completion rate</div>
               </div>
-              <div className="rounded-xl border border-purple-100 bg-white/70 px-3 py-2 text-center sm:px-4">
-                <div className="text-lg font-bold text-purple-600 sm:text-2xl">{stats.urgentCount}</div>
-                <div className="text-[11px] text-slate-500 sm:text-xs">Urgent tasks</div>
+              <div className="rounded-xl border border-stone-200 bg-white px-3 py-2 text-center sm:px-4">
+                <div className="text-lg font-semibold text-stone-900 sm:text-2xl">{stats.urgentCount}</div>
+                <div className="text-[11px] text-stone-500 sm:text-xs">Urgent tasks</div>
               </div>
-              <div className="rounded-xl border border-green-100 bg-white/70 px-3 py-2 text-center sm:px-4">
-                <div className="text-lg font-bold text-green-600 sm:text-2xl">{stats.weeklyCompleted}</div>
-                <div className="text-[11px] text-slate-500 sm:text-xs">Completed this week</div>
+              <div className="rounded-xl border border-stone-200 bg-white px-3 py-2 text-center sm:px-4">
+                <div className="text-lg font-semibold text-stone-900 sm:text-2xl">{stats.weeklyCompleted}</div>
+                <div className="text-[11px] text-stone-500 sm:text-xs">Completed this week</div>
               </div>
             </div>
           </div>
 
           {/* Progress Bar */}
-          <div className="mt-4 overflow-hidden rounded-full bg-slate-200">
+          <div className="mt-4 overflow-hidden rounded-full bg-stone-200">
             <div 
-              className="h-2 bg-linear-to-r from-indigo-500 to-purple-500 transition-all duration-500"
+              className="h-2 bg-stone-900 transition-all duration-500"
               style={{ width: `${stats.completionRate}%` }}
             />
           </div>
-          <div className="mt-2 flex items-center justify-between text-xs text-slate-500">
+          <div className="mt-2 flex items-center justify-between text-xs text-stone-500">
             <span>{stats.completed} of {stats.total} tasks done</span>
             <span>{stats.total - stats.completed} remaining</span>
           </div>
@@ -518,8 +518,8 @@ export default function TodoPage() {
 
         {/* Status Messages */}
         {loading && (
-          <div className="flex items-center gap-2 text-sm text-slate-500 mb-4">
-            <div className="h-4 w-4 animate-spin rounded-full border-2 border-indigo-500 border-t-transparent" />
+          <div className="mb-4 flex items-center gap-2 text-sm text-stone-500">
+            <div className="h-4 w-4 animate-spin rounded-full border-2 border-stone-700 border-t-transparent" />
             Loading your tasks...
           </div>
         )}
@@ -540,13 +540,13 @@ export default function TodoPage() {
         {/* Create Form */}
         <form
           onSubmit={handleCreate}
-          className="mb-8 rounded-2xl border border-indigo-100 bg-white/80 backdrop-blur-sm p-6 shadow-lg shadow-indigo-100/50"
+          className="mb-8 rounded-2xl border border-stone-200 bg-white p-6 shadow-sm"
         >
           <div className="flex items-center gap-2 mb-6">
-            <div className="rounded-full bg-indigo-100 p-2">
-              <Plus className="h-4 w-4 text-indigo-600" />
+            <div className="rounded-full bg-stone-100 p-2">
+              <Plus className="h-4 w-4 text-stone-700" />
             </div>
-            <h2 className="text-lg font-semibold text-slate-900">Create New Task</h2>
+            <h2 className="text-lg font-semibold text-stone-900">Create New Task</h2>
           </div>
           
           <div className="grid gap-4 md:grid-cols-2">
@@ -555,7 +555,7 @@ export default function TodoPage() {
                 value={title}
                 onChange={(event) => setTitle(event.target.value)}
                 required
-                className="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm text-slate-700 focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100 transition-all"
+                className="w-full rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-700 focus:border-stone-700 focus:outline-none focus:ring-2 focus:ring-stone-200 transition-all"
                 placeholder="What needs to be done?"
               />
             </div>
@@ -565,13 +565,13 @@ export default function TodoPage() {
                 value={description}
                 onChange={(event) => setDescription(event.target.value)}
                 rows={2}
-                className="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm text-slate-700 focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100 transition-all"
+                className="w-full rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-700 focus:border-stone-700 focus:outline-none focus:ring-2 focus:ring-stone-200 transition-all"
                 placeholder="Add details (optional)"
               />
             </div>
             
             <div>
-              <label className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
+              <label className="text-xs font-semibold uppercase tracking-[0.2em] text-stone-500">
                 Priority
               </label>
               <select
@@ -579,7 +579,7 @@ export default function TodoPage() {
                 onChange={(event) =>
                   setPriority(event.target.value as Task["priority"])
                 }
-                className="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm text-slate-700 focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                className="mt-2 w-full rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm text-stone-700 focus:border-stone-700 focus:outline-none focus:ring-2 focus:ring-stone-200"
               >
                   <option value="LOW">Low</option>
                   <option value="MEDIUM">Medium</option>
@@ -589,16 +589,16 @@ export default function TodoPage() {
             </div>
             
             <div>
-              <label className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
+              <label className="text-xs font-semibold uppercase tracking-[0.2em] text-stone-500">
                 Due Date
               </label>
               <div className="relative mt-2">
-                <Calendar className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                <Calendar className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-stone-500" />
                 <input
                   type="datetime-local"
                   value={dueDate}
                   onChange={(event) => setDueDate(event.target.value)}
-                  className="w-full rounded-xl border border-slate-200 bg-slate-50/50 pl-10 pr-4 py-3 text-sm text-slate-700 focus:border-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+                  className="w-full rounded-xl border border-stone-300 bg-white pl-10 pr-4 py-3 text-sm text-stone-700 focus:border-stone-700 focus:outline-none focus:ring-2 focus:ring-stone-200"
                 />
               </div>
             </div>
@@ -608,7 +608,7 @@ export default function TodoPage() {
             <button
               type="submit"
               disabled={actionLoading === "create"}
-              className="flex items-center gap-2 rounded bg-black px-6 py-3 text-sm font-semibold text-white transition-all hover:from-indigo-700 hover:to-purple-700 hover:shadow-lg hover:shadow-indigo-200/50 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex items-center gap-2 rounded-xl bg-stone-900 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-stone-800 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {actionLoading === "create" ? (
                 <>
@@ -626,41 +626,41 @@ export default function TodoPage() {
         </form>
 
         {/* Filters and Sorting */}
-        <div className="mb-6 rounded-xl border border-indigo-100 bg-white/60 backdrop-blur-sm p-4">
+        <div className="mb-6 rounded-xl border border-stone-200 bg-white p-4">
           <button
             onClick={() => setShowFilters(!showFilters)}
             className="flex w-full items-center justify-between text-left"
           >
             <div className="flex items-center gap-2">
-              <Filter className="h-4 w-4 text-indigo-600" />
-              <span className="text-sm font-semibold text-slate-700">Filters & Sorting</span>
+              <Filter className="h-4 w-4 text-stone-700" />
+              <span className="text-sm font-semibold text-stone-700">Filters & Sorting</span>
             </div>
-            <ChevronRight className={`h-4 w-4 text-slate-400 transition-transform ${showFilters ? 'rotate-90' : ''}`} />
+            <ChevronRight className={`h-4 w-4 text-stone-400 transition-transform ${showFilters ? 'rotate-90' : ''}`} />
           </button>
           
           {showFilters && (
             <div className="mt-4 grid gap-4 md:grid-cols-4">
               <div>
-                <label className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+                <label className="text-xs font-semibold uppercase tracking-[0.2em] text-stone-500">
                   Search
                 </label>
                 <input
                   type="text"
                   value={filters.search}
                   onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
-                  className="mt-2 w-full rounded-lg border border-indigo-200 bg-white px-3 py-2 text-sm"
+                  className="mt-2 w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm"
                   placeholder="Search tasks..."
                 />
               </div>
               
               <div>
-                <label className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+                <label className="text-xs font-semibold uppercase tracking-[0.2em] text-stone-500">
                   Status
                 </label>
                 <select
                   value={filters.status}
                   onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value }))}
-                  className="mt-2 w-full rounded-lg border border-indigo-200 bg-white px-3 py-2 text-sm"
+                  className="mt-2 w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm"
                 >
                   <option value="ALL">All Status</option>
                   <option value="PENDING">Pending</option>
@@ -671,13 +671,13 @@ export default function TodoPage() {
               </div>
               
               <div>
-                <label className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+                <label className="text-xs font-semibold uppercase tracking-[0.2em] text-stone-500">
                   Priority
                 </label>
                 <select
                   value={filters.priority}
                   onChange={(e) => setFilters(prev => ({ ...prev, priority: e.target.value }))}
-                  className="mt-2 w-full rounded-lg border border-indigo-200 bg-white px-3 py-2 text-sm"
+                  className="mt-2 w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm"
                 >
                   <option value="ALL">All Priorities</option>
                   <option value="URGENT">Urgent</option>
@@ -688,13 +688,13 @@ export default function TodoPage() {
               </div>
               
               <div>
-                <label className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+                <label className="text-xs font-semibold uppercase tracking-[0.2em] text-stone-500">
                   Sort By
                 </label>
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
-                  className="mt-2 w-full rounded-lg border border-indigo-200 bg-white px-3 py-2 text-sm"
+                  className="mt-2 w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm"
                 >
                   <option value="priority">Priority (High to Low)</option>
                   <option value="dueDate">Due Date</option>
@@ -708,9 +708,9 @@ export default function TodoPage() {
         {/* Tasks List */}
         <div className="space-y-4">
           {sortedAndFilteredTasks.length === 0 ? (
-            <div className="rounded-2xl border-2 border-dashed border-indigo-200 bg-white/50 px-6 py-12 text-center">
-              <Target className="mx-auto h-12 w-12 text-indigo-300" />
-              <p className="mt-4 text-sm text-slate-500">
+            <div className="rounded-2xl border-2 border-dashed border-stone-300 bg-white px-6 py-12 text-center">
+              <Target className="mx-auto h-12 w-12 text-stone-300" />
+              <p className="mt-4 text-sm text-stone-500">
                 {filters.search || filters.status !== "ALL" || filters.priority !== "ALL"
                   ? "No tasks match your filters."
                   : "No tasks yet. Create your first task above!"}
@@ -733,9 +733,9 @@ export default function TodoPage() {
                       ? "border-green-200 bg-green-50/30" 
                       : task.priority === "URGENT"
                       ? "border-red-200 bg-red-50/30"
-                      : "border-indigo-100 bg-white/80"
-                  } backdrop-blur-sm p-6 hover:shadow-lg ${
-                    task.priority === "URGENT" ? "hover:shadow-red-100/50" : "hover:shadow-indigo-100/50"
+                      : "border-stone-200 bg-white"
+                  } p-6 hover:shadow-md ${
+                    task.priority === "URGENT" ? "hover:shadow-red-100/40" : "hover:shadow-stone-200"
                   }`}
                 >
                   {/* Priority indicator line */}
@@ -751,21 +751,21 @@ export default function TodoPage() {
                       <input
                         value={editTitle}
                         onChange={(e) => setEditTitle(e.target.value)}
-                        className="w-full rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm"
+                        className="w-full rounded-xl border border-stone-300 bg-white px-4 py-2 text-sm"
                         placeholder="Task title"
                       />
                       <textarea
                         value={editDescription}
                         onChange={(e) => setEditDescription(e.target.value)}
                         rows={2}
-                        className="w-full rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm"
+                        className="w-full rounded-xl border border-stone-300 bg-white px-4 py-2 text-sm"
                         placeholder="Description"
                       />
                       <div className="grid gap-4 md:grid-cols-3">
                         <select
                           value={editPriority}
                           onChange={(e) => setEditPriority(e.target.value as Task["priority"])}
-                          className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm"
+                          className="rounded-xl border border-stone-300 bg-white px-3 py-2 text-sm"
                         >
                           <option value="LOW">Low</option>
                           <option value="MEDIUM">Medium</option>
@@ -775,7 +775,7 @@ export default function TodoPage() {
                         <select
                           value={editStatus}
                           onChange={(e) => setEditStatus(e.target.value as Task["status"])}
-                          className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm"
+                          className="rounded-xl border border-stone-300 bg-white px-3 py-2 text-sm"
                         >
                           <option value="PENDING">Pending</option>
                           <option value="IN_PROGRESS">In Progress</option>
@@ -786,14 +786,14 @@ export default function TodoPage() {
                           type="datetime-local"
                           value={editDueDate}
                           onChange={(e) => setEditDueDate(e.target.value)}
-                          className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm"
+                          className="rounded-xl border border-stone-300 bg-white px-3 py-2 text-sm"
                         />
                       </div>
                       <div className="flex gap-3">
                         <button
                           onClick={() => handleUpdate(task.id)}
                           disabled={isLoading}
-                          className="flex items-center gap-2 rounded-xl bg-linear-to-r from-emerald-500 to-green-500 px-4 py-2 text-sm font-semibold text-white hover:from-emerald-600 hover:to-green-600 disabled:opacity-50"
+                          className="flex items-center gap-2 rounded-xl bg-stone-900 px-4 py-2 text-sm font-semibold text-white hover:bg-stone-800 disabled:opacity-50"
                         >
                           {isLoading ? (
                             <>
@@ -810,7 +810,7 @@ export default function TodoPage() {
                         <button
                           onClick={cancelEdit}
                           disabled={isLoading}
-                          className="flex items-center gap-2 rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                          className="flex items-center gap-2 rounded-xl border border-stone-300 px-4 py-2 text-sm font-semibold text-stone-700 hover:bg-stone-50"
                         >
                           <X className="h-4 w-4" />
                           Cancel
@@ -832,21 +832,21 @@ export default function TodoPage() {
                           >
                             <CheckCircle2 className={`h-5 w-5 ${
                               task.status === "COMPLETED" 
-                                ? "text-green-500" 
-                                : "text-slate-300 hover:text-green-500"
+                                ? "text-green-600" 
+                                : "text-stone-300 hover:text-green-600"
                             } transition-colors`} />
                           </button>
                           
                           <div className="flex-1">
                             <h3 className={`text-lg font-semibold ${
-                              task.status === "COMPLETED" ? "text-slate-500 line-through" : "text-slate-900"
+                              task.status === "COMPLETED" ? "text-stone-500 line-through" : "text-stone-900"
                             }`}>
                               {task.title}
                             </h3>
                             
                             {task.description && (
                               <p className={`mt-1 text-sm ${
-                                task.status === "COMPLETED" ? "text-slate-400" : "text-slate-600"
+                                task.status === "COMPLETED" ? "text-stone-400" : "text-stone-600"
                               }`}>
                                 {task.description}
                               </p>
@@ -860,7 +860,7 @@ export default function TodoPage() {
                                 {task.priority}
                               </span>
                               
-                              <span className={`flex items-center gap-1 rounded-full px-3 py.5 text-xs border ${
+                              <span className={`flex items-center gap-1 rounded-full px-3 py-1.5 text-xs border ${
                                 statusColors[task.status]
                               }`}>
                                 <StatusIcon className="h-3 w-3" />
@@ -871,7 +871,7 @@ export default function TodoPage() {
                                 <span className={`flex items-center gap-1 rounded-full px-3 py-1.5 text-xs border ${
                                   new Date(task.dueDate) < new Date() && task.status !== "COMPLETED"
                                     ? "bg-red-100 text-red-700 border-red-200"
-                                    : "bg-slate-100 text-slate-600 border-slate-200"
+                                    : "bg-stone-100 text-stone-600 border-stone-200"
                                 }`}>
                                   <Calendar className="h-3 w-3" />
                                   {new Date(task.dueDate).toLocaleDateString('en-US', {
@@ -892,7 +892,7 @@ export default function TodoPage() {
                           value={task.status}
                           onChange={(e) => handleQuickStatusChange(task.id, e.target.value as Task["status"])}
                           disabled={isLoading}
-                          className="rounded-lg border border-slate-200 bg-white px-2 py-1 text-xs"
+                          className="rounded-lg border border-stone-300 bg-white px-2 py-1 text-xs"
                         >
                           <option value="PENDING">Pending</option>
                           <option value="IN_PROGRESS">In Progress</option>
@@ -903,7 +903,7 @@ export default function TodoPage() {
                         <button
                           onClick={() => startEdit(task)}
                           disabled={isLoading}
-                          className="rounded-lg border border-indigo-200 p-2 text-indigo-600 hover:bg-indigo-50 disabled:opacity-50"
+                          className="rounded-lg border border-stone-300 p-2 text-stone-700 hover:bg-stone-100 disabled:opacity-50"
                           title="Edit"
                         >
                           <Edit2 className="h-4 w-4" />
@@ -928,8 +928,8 @@ export default function TodoPage() {
 
         {/* Pagination */}
         {sortedAndFilteredTasks.length > ITEMS_PER_PAGE && (
-          <div className="mt-8 flex items-center justify-between border-t border-indigo-100 pt-6">
-            <p className="text-sm text-slate-500">
+          <div className="mt-8 flex items-center justify-between border-t border-stone-200 pt-6">
+            <p className="text-sm text-stone-500">
               Showing {((currentPage - 1) * ITEMS_PER_PAGE) + 1} - {Math.min(currentPage * ITEMS_PER_PAGE, sortedAndFilteredTasks.length)} of {sortedAndFilteredTasks.length} tasks
             </p>
             
@@ -937,7 +937,7 @@ export default function TodoPage() {
               <button
                 onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                 disabled={currentPage === 1}
-                className="flex items-center gap-1 rounded-xl border border-indigo-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-indigo-50 disabled:opacity-50"
+                className="flex items-center gap-1 rounded-xl border border-stone-300 px-4 py-2 text-sm font-semibold text-stone-700 hover:bg-stone-100 disabled:opacity-50"
               >
                 <ChevronLeft className="h-4 w-4" />
                 Previous
@@ -950,8 +950,8 @@ export default function TodoPage() {
                     onClick={() => setCurrentPage(i + 1)}
                     className={`h-8 w-8 rounded-lg text-sm font-semibold transition-all ${
                       currentPage === i + 1
-                        ? 'bg-linear-to-r from-indigo-600 to-purple-600 text-white'
-                        : 'text-slate-600 hover:bg-indigo-50'
+                        ? 'bg-stone-900 text-white'
+                        : 'text-stone-600 hover:bg-stone-100'
                     }`}
                   >
                     {i + 1}
@@ -962,7 +962,7 @@ export default function TodoPage() {
               <button
                 onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                 disabled={currentPage === totalPages}
-                className="flex items-center gap-1 rounded-xl border border-indigo-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-indigo-50 disabled:opacity-50"
+                className="flex items-center gap-1 rounded-xl border border-stone-300 px-4 py-2 text-sm font-semibold text-stone-700 hover:bg-stone-100 disabled:opacity-50"
               >
                 Next
                 <ChevronRight className="h-4 w-4" />
@@ -973,21 +973,21 @@ export default function TodoPage() {
 
         {/* Weekly Summary */}
         {tasks.length > 0 && (
-          <div className="mt-8 rounded-2xl border border-indigo-100 bg-white p-6 shadow-sm">
+          <div className="mt-8 rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
             <div className="mb-5 flex items-center justify-between">
-              <div className="flex items-center gap-2 text-slate-900">
-                <BarChart3 className="h-5 w-5 text-indigo-600" />
+              <div className="flex items-center gap-2 text-stone-900">
+                <BarChart3 className="h-5 w-5 text-stone-700" />
                 <h3 className="font-semibold">Weekly Snapshot</h3>
               </div>
-              <span className="rounded-full bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700">
+              <span className="rounded-full bg-stone-100 px-3 py-1 text-xs font-medium text-stone-700">
                 {stats.completionRate}% complete
               </span>
             </div>
             
             <div className="grid gap-3 sm:grid-cols-3">
-              <div className="rounded-xl border border-slate-100 bg-slate-50 p-4">
-                <div className="text-2xl font-bold text-slate-900">{stats.weeklyCompleted}</div>
-                <div className="text-xs text-slate-500">Finished this week</div>
+              <div className="rounded-xl border border-stone-200 bg-stone-50 p-4">
+                <div className="text-2xl font-semibold text-stone-900">{stats.weeklyCompleted}</div>
+                <div className="text-xs text-stone-500">Finished this week</div>
               </div>
               
               <div className="rounded-xl border border-rose-100 bg-rose-50 p-4">
@@ -1001,13 +1001,13 @@ export default function TodoPage() {
               </div>
             </div>
             
-            <div className="mt-4 flex items-center gap-2 rounded-lg border border-slate-100 bg-slate-50 px-3 py-2 text-slate-600">
+            <div className="mt-4 flex items-center gap-2 rounded-lg border border-stone-200 bg-stone-50 px-3 py-2 text-stone-600">
               {stats.completionRate >= 70 ? (
-                <Sparkles className="h-4 w-4 text-indigo-600" />
+                <Sparkles className="h-4 w-4 text-stone-700" />
               ) : stats.completionRate >= 40 ? (
-                <TrendingUp className="h-4 w-4 text-indigo-600" />
+                <TrendingUp className="h-4 w-4 text-stone-700" />
               ) : (
-                <Clock className="h-4 w-4 text-indigo-600" />
+                <Clock className="h-4 w-4 text-stone-700" />
               )}
               <p className="text-sm">
                 {stats.completionRate >= 70 
