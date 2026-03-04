@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useMemo, useEffect, useState } from "react";
 import { getAuthToken } from "../../lib/auth";
 
 const API_URL =
@@ -22,6 +22,8 @@ const toInputDateTime = (value: string | null) => {
   return new Date(date.getTime() - offset).toISOString().slice(0, 16);
 };
 
+const ITEMS_PER_PAGE = 5;
+
 export default function TodoPage() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
@@ -39,6 +41,20 @@ export default function TodoPage() {
   const [editPriority, setEditPriority] = useState<Task["priority"]>("MEDIUM");
   const [editStatus, setEditStatus] = useState<Task["status"]>("PENDING");
   const [editDueDate, setEditDueDate] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const totalPages = Math.max(1, Math.ceil(tasks.length / ITEMS_PER_PAGE));
+
+  const paginatedTasks = useMemo(() => {
+    const start = (currentPage - 1) * ITEMS_PER_PAGE;
+    return tasks.slice(start, start + ITEMS_PER_PAGE);
+  }, [currentPage, tasks]);
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
 
   const fetchTasks = async (token: string) => {
     const response = await fetch(`${API_URL}/api/tasks`, {
@@ -108,6 +124,7 @@ export default function TodoPage() {
       setPriority("MEDIUM");
       setDueDate("");
       setMessage("Task added.");
+      setCurrentPage(1);
       await fetchTasks(token);
     } catch (submitError) {
       setError(submitError instanceof Error ? submitError.message : "Unknown error");
@@ -187,6 +204,7 @@ export default function TodoPage() {
       }
 
       setMessage("Task deleted.");
+      setCurrentPage(1);
       await fetchTasks(token);
     } catch (submitError) {
       setError(submitError instanceof Error ? submitError.message : "Unknown error");
@@ -280,7 +298,7 @@ export default function TodoPage() {
             No tasks yet. Add your first task above.
           </div>
         ) : (
-          tasks.map((task) => (
+          paginatedTasks.map((task) => (
             <div
               key={task.id}
               className="rounded-3xl border border-slate-200 bg-white p-5"
@@ -417,6 +435,30 @@ export default function TodoPage() {
           ))
         )}
       </div>
+
+      {tasks.length > ITEMS_PER_PAGE && (
+        <div className="mt-6 flex items-center justify-end gap-3">
+          <button
+            type="button"
+            onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
+            disabled={currentPage === 1}
+            className="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:border-slate-300 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            Previous
+          </button>
+          <span className="text-sm text-slate-500">
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            type="button"
+            onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
+            disabled={currentPage === totalPages}
+            className="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:border-slate-300 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            Next
+          </button>
+        </div>
+      )}
     </div>
   );
 }

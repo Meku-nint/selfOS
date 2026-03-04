@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { getAuthToken } from "../../lib/auth";
 
 const API_URL =
@@ -32,6 +32,8 @@ const toInputDateTime = (value: string | null) => {
   return new Date(date.getTime() - offset).toISOString().slice(0, 16);
 };
 
+const ITEMS_PER_PAGE = 5;
+
 export default function RemindersPage() {
   const [reminders, setReminders] = useState<Reminder[]>([]);
   const [tasks, setTasks] = useState<TaskOption[]>([]);
@@ -50,6 +52,20 @@ export default function RemindersPage() {
   const [editMessage, setEditMessage] = useState("");
   const [editScheduledAt, setEditScheduledAt] = useState("");
   const [editType, setEditType] = useState<Reminder["type"]>("NOTIFICATION");
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const totalPages = Math.max(1, Math.ceil(reminders.length / ITEMS_PER_PAGE));
+
+  const paginatedReminders = useMemo(() => {
+    const start = (currentPage - 1) * ITEMS_PER_PAGE;
+    return reminders.slice(start, start + ITEMS_PER_PAGE);
+  }, [currentPage, reminders]);
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
 
   const fetchReminders = useCallback(async (token: string) => {
     const response = await fetch(`${API_URL}/api/reminders`, {
@@ -138,6 +154,7 @@ export default function RemindersPage() {
       setScheduledAt("");
       setType("NOTIFICATION");
       setMessage("Reminder added.");
+      setCurrentPage(1);
       await refreshData(token);
     } catch (submitError) {
       setError(submitError instanceof Error ? submitError.message : "Unknown error");
@@ -214,6 +231,7 @@ export default function RemindersPage() {
       }
 
       setMessage("Reminder deleted.");
+      setCurrentPage(1);
       await refreshData(token);
     } catch (submitError) {
       setError(submitError instanceof Error ? submitError.message : "Unknown error");
@@ -318,7 +336,7 @@ export default function RemindersPage() {
             No reminders yet. Schedule one above.
           </div>
         ) : (
-          reminders.map((reminder) => (
+          paginatedReminders.map((reminder) => (
             <div
               key={reminder.id}
               className="rounded-3xl border border-slate-200 bg-white p-5"
@@ -437,6 +455,30 @@ export default function RemindersPage() {
           ))
         )}
       </div>
+
+      {reminders.length > ITEMS_PER_PAGE && (
+        <div className="mt-6 flex items-center justify-end gap-3">
+          <button
+            type="button"
+            onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
+            disabled={currentPage === 1}
+            className="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:border-slate-300 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            Previous
+          </button>
+          <span className="text-sm text-slate-500">
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            type="button"
+            onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
+            disabled={currentPage === totalPages}
+            className="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:border-slate-300 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            Next
+          </button>
+        </div>
+      )}
     </div>
   );
 }
