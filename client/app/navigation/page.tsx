@@ -38,6 +38,7 @@ export default function AppNavbar() {
 		};
 
 		window.addEventListener("focus", handleFocus);
+		// Use passive event listener for scroll to improve performance
 		window.addEventListener("scroll", handleScroll, { passive: true });
 		handleScroll();
 
