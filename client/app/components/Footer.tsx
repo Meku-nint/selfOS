@@ -142,12 +142,7 @@ export default function Footer() {
               <a href="/cookies" className="text-red-900 hover:text-red-700 transition-colors">
                 Cookie Policy
               </a>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-red-800">v2.4.0</span>
-              <span className="text-xs text-red-800">•</span>
-              <span className="text-xs text-red-800">EN</span>
-            </div>
+            </div>     
           </div>
         </div>
       </div>
