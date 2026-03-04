@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 
 const API_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+  process.env.NEXT_PUBLIC_API_URL;
 const JOURNAL_API = `${API_URL}/api/journal`;
 
 type JournalEntry = {

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { getAuthToken } from "../../lib/auth";
 
 const API_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+  process.env.NEXT_PUBLIC_API_URL;
 
 const monthLabels = [
   { label: "Jan", week: 0 },

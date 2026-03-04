@@ -973,46 +973,48 @@ export default function TodoPage() {
 
         {/* Weekly Summary */}
         {tasks.length > 0 && (
-          <div className="mt-8 rounded-2xl bg-linear-to-br from-indigo-500 to-purple-500 p-6 text-white">
-            <div className="flex items-center gap-2 mb-4">
-              <BarChart3 className="h-5 w-5" />
-              <h3 className="font-semibold">Weekly Progress</h3>
+          <div className="mt-8 rounded-2xl border border-indigo-100 bg-white p-6 shadow-sm">
+            <div className="mb-5 flex items-center justify-between">
+              <div className="flex items-center gap-2 text-slate-900">
+                <BarChart3 className="h-5 w-5 text-indigo-600" />
+                <h3 className="font-semibold">Weekly Snapshot</h3>
+              </div>
+              <span className="rounded-full bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700">
+                {stats.completionRate}% complete
+              </span>
             </div>
             
-            <div className="grid gap-4 md:grid-cols-3">
-              <div>
-                <div className="text-3xl font-bold">{stats.weeklyCompleted}</div>
-                <div className="text-sm text-indigo-100">Tasks completed this week</div>
+            <div className="grid gap-3 sm:grid-cols-3">
+              <div className="rounded-xl border border-slate-100 bg-slate-50 p-4">
+                <div className="text-2xl font-bold text-slate-900">{stats.weeklyCompleted}</div>
+                <div className="text-xs text-slate-500">Finished this week</div>
               </div>
               
-              <div>
-                <div className="text-3xl font-bold">{stats.urgentCount}</div>
-                <div className="text-sm text-indigo-100">Urgent tasks remaining</div>
+              <div className="rounded-xl border border-rose-100 bg-rose-50 p-4">
+                <div className="text-2xl font-bold text-rose-700">{stats.urgentCount}</div>
+                <div className="text-xs text-rose-500">Urgent open items</div>
               </div>
               
-              <div>
-                <div className="text-3xl font-bold">
-                  {stats.total - stats.completed}
-                </div>
-                <div className="text-sm text-indigo-100">Tasks to complete</div>
+              <div className="rounded-xl border border-amber-100 bg-amber-50 p-4">
+                <div className="text-2xl font-bold text-amber-700">{stats.total - stats.completed}</div>
+                <div className="text-xs text-amber-600">Still pending</div>
               </div>
             </div>
             
-            {/* Motivational message */}
-            <div className="mt-4 flex items-center gap-2 text-indigo-100">
+            <div className="mt-4 flex items-center gap-2 rounded-lg border border-slate-100 bg-slate-50 px-3 py-2 text-slate-600">
               {stats.completionRate >= 70 ? (
-                <Sparkles className="h-4 w-4" />
+                <Sparkles className="h-4 w-4 text-indigo-600" />
               ) : stats.completionRate >= 40 ? (
-                <TrendingUp className="h-4 w-4" />
+                <TrendingUp className="h-4 w-4 text-indigo-600" />
               ) : (
-                <Target className="h-4 w-4" />
+                <Clock className="h-4 w-4 text-indigo-600" />
               )}
               <p className="text-sm">
                 {stats.completionRate >= 70 
-                  ? "Outstanding progress. You're on fire!"
+                  ? "Strong week. Keep this pace."
                   : stats.completionRate >= 40
-                  ? "Good momentum. Keep pushing!"
-                  : "Every task completed is a step forward."}
+                  ? "Momentum is building. Prioritize the urgent items next."
+                  : "Start with one high-impact task to build rhythm."}
               </p>
             </div>
           </div>
