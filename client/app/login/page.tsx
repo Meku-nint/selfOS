@@ -2,6 +2,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
 import { getAuthToken, setAuthToken } from "../lib/auth";
@@ -10,6 +11,14 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL;
 type View = "login" | "register" | "verify";
 
 export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-white" />}>
+      <LoginPageContent />
+    </Suspense>
+  );
+}
+
+function LoginPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const tokenParam = searchParams.get("token");
