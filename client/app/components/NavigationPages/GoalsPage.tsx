@@ -32,17 +32,8 @@ type Goal = {
 const STORAGE_KEY = "selfos.goals.v1";
 
 export default function GoalsPage() {
-  const [goals, setGoals] = useState<Goal[]>(() => {
-    if (typeof window === "undefined") return [];
-
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return [];
-      return JSON.parse(raw) as Goal[];
-    } catch {
-      return [];
-    }
-  });
+  const [goals, setGoals] = useState<Goal[]>([]);
+  const [hasLoadedGoals, setHasLoadedGoals] = useState(false);
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -52,8 +43,26 @@ export default function GoalsPage() {
   const [message, setMessage] = useState<string | null>(null);
 
   useEffect(() => {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) {
+        setHasLoadedGoals(true);
+        return;
+      }
+
+      const parsed = JSON.parse(raw) as Goal[];
+      setGoals(Array.isArray(parsed) ? parsed : []);
+    } catch {
+      setGoals([]);
+    } finally {
+      setHasLoadedGoals(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!hasLoadedGoals) return;
     localStorage.setItem(STORAGE_KEY, JSON.stringify(goals));
-  }, [goals]);
+  }, [goals, hasLoadedGoals]);
 
   const stats = useMemo(() => {
     const total = goals.length;
@@ -148,7 +157,7 @@ export default function GoalsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-emerald-50 via-white to-teal-50">
+    <div className="min-h-screen ">
       <div className="mx-auto max-w-6xl px-4 py-10">
         <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
@@ -354,7 +363,7 @@ export default function GoalsPage() {
 
 function StatCard({ label, value }: { label: string; value: string | number }) {
   return (
-    <div className="rounded-xl border border-emerald-100 bg-white/70 px-3 py-2 text-center">
+    <div className="rounded-xl border border-green-600/40 bg-white/70 px-3 py-2 text-center">
       <p className="text-lg font-bold text-emerald-700">{value}</p>
       <p className="text-[11px] text-slate-500">{label}</p>
     </div>

@@ -95,8 +95,8 @@ export default function AppNavbar() {
 			ref={headerRef}
 			className={`sticky top-0 z-50 transition-all duration-300 ${
 				scrolled
-					? "bg-white/90 backdrop-blur-md shadow-sm border-b border-slate-200/50"
-					: "bg-white border-b border-slate-200/50"
+					? "bg-white/90 backdrop-blur-md shadow-sm border-b border-gray-500/30"
+					: "bg-white/80 border-b border-slate-200/50"
 			}`}
 		>
 			<div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -202,7 +202,7 @@ export default function AppNavbar() {
 
 			{/* Mobile Menu */}
 			{open && (
-				<div className="md:hidden border-t border-slate-200/50 bg-white/95 backdrop-blur-md">
+				<div className="md:hidden border-t border-slate-200/50 backdrop-blur-md">
 					<div className="mx-auto max-w-7xl px-4 py-3">
 						<div className="flex flex-col gap-1">
 							{NAV_ITEMS.map((item) => {
