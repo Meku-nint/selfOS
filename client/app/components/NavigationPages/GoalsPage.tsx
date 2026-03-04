@@ -32,8 +32,17 @@ type Goal = {
 const STORAGE_KEY = "selfos.goals.v1";
 
 export default function GoalsPage() {
-  const [goals, setGoals] = useState<Goal[]>([]);
-  const [hasLoadedGoals, setHasLoadedGoals] = useState(false);
+  const [goals, setGoals] = useState<Goal[]>(() => {
+    if (typeof window === "undefined") return [];
+
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return [];
+      return JSON.parse(raw) as Goal[];
+    } catch {
+      return [];
+    }
+  });
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -43,26 +52,8 @@ export default function GoalsPage() {
   const [message, setMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) {
-        setHasLoadedGoals(true);
-        return;
-      }
-
-      const parsed = JSON.parse(raw) as Goal[];
-      setGoals(Array.isArray(parsed) ? parsed : []);
-    } catch {
-      setGoals([]);
-    } finally {
-      setHasLoadedGoals(true);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!hasLoadedGoals) return;
     localStorage.setItem(STORAGE_KEY, JSON.stringify(goals));
-  }, [goals, hasLoadedGoals]);
+  }, [goals]);
 
   const stats = useMemo(() => {
     const total = goals.length;
@@ -182,7 +173,7 @@ export default function GoalsPage() {
 
         <form
           onSubmit={createGoal}
-          className="mb-8 rounded-2xl border border-emerald-100 bg-white/80 p-6 shadow-lg shadow-emerald-100/50"
+          className="mb-8 rounded-2xl border border-red-900 bg-white/80 p-6  "
         >
           <div className="mb-5 flex items-center gap-2">
             <Plus className="h-4 w-4 text-emerald-700" />

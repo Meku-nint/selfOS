@@ -3,8 +3,21 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { getAuthToken } from "../../lib/auth";
 
-const API_URL =
-  process.env.NEXT_PUBLIC_API_URL ;
+function normalizeBaseUrl(rawUrl: string | undefined, fallbackUrl: string, protocol: "http" | "https" = "https") {
+  const value = (rawUrl || "").trim();
+  const fallback = (fallbackUrl || "").trim();
+  const resolved = value || fallback;
+
+  if (!resolved) return "";
+
+  const withProtocol = /^https?:\/\//i.test(resolved)
+    ? resolved
+    : `${protocol}://${resolved}`;
+
+  return withProtocol.replace(/\/+$/, "");
+}
+
+const API_URL = normalizeBaseUrl(process.env.NEXT_PUBLIC_API_URL, "http://localhost:4000", "https");
 
 type TaskOption = {
   id: string;
@@ -239,246 +252,264 @@ export default function RemindersPage() {
   };
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-10">
-      <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-bold text-slate-900">Reminders</h1>
-        <p className="text-slate-600">Schedule nudges tied to your tasks.</p>
-        {loading && <p className="text-sm text-slate-500">Loading reminders...</p>}
-        {error && <p className="text-sm text-rose-600">{error}</p>}
-        {message && <p className="text-sm text-emerald-600">{message}</p>}
-      </div>
-
-      <form
-        onSubmit={handleCreate}
-        className="mt-8 rounded-3xl border border-slate-200 bg-white p-6"
-      >
-        <h2 className="text-lg font-semibold text-slate-900">Add reminder</h2>
-        <div className="mt-4 grid gap-4 md:grid-cols-2">
-          <div>
-            <label className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
-              Task
-            </label>
-            <select
-              value={taskId}
-              onChange={(event) => setTaskId(event.target.value)}
-              required
-              className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700 focus:border-slate-400 focus:outline-none"
-            >
-              <option value="">Select a task</option>
-              {tasks.map((task) => (
-                <option key={task.id} value={task.id}>
-                  {task.title}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
-              Title
-            </label>
-            <input
-              value={title}
-              onChange={(event) => setTitle(event.target.value)}
-              required
-              className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700 focus:border-slate-400 focus:outline-none"
-              placeholder="Check in on the task"
-            />
-          </div>
-          <div className="md:col-span-2">
-            <label className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
-              Message
-            </label>
-            <input
-              value={reminderMessage}
-              onChange={(event) => setReminderMessage(event.target.value)}
-              className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700 focus:border-slate-400 focus:outline-none"
-              placeholder="Optional message"
-            />
-          </div>
-          <div>
-            <label className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
-              Schedule time
-            </label>
-            <input
-              type="datetime-local"
-              value={scheduledAt}
-              onChange={(event) => setScheduledAt(event.target.value)}
-              required
-              className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700 focus:border-slate-400 focus:outline-none"
-            />
-          </div>
-          <div>
-            <label className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
-              Type
-            </label>
-            <select
-              value={type}
-              onChange={(event) => setType(event.target.value as Reminder["type"])}
-              className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700 focus:border-slate-400 focus:outline-none"
-            >
-              <option value="NOTIFICATION">Notification</option>
-              <option value="EMAIL">Email</option>
-              <option value="BOTH">Both</option>
-            </select>
-          </div>
+    <div className="min-h-screen bg-stone-50">
+      <div className="mx-auto max-w-6xl px-4 py-10">
+        <div className="flex flex-col gap-2">
+          <h1 className="text-3xl font-semibold tracking-tight text-stone-900">Reminders</h1>
+          <p className="text-stone-600">Schedule focused reminders linked to your tasks.</p>
+          {loading && <p className="text-sm text-stone-500">Loading reminders...</p>}
         </div>
-        <button
-          type="submit"
-          className="mt-4 rounded-full bg-slate-900 px-5 py-2 text-sm font-semibold text-white transition hover:bg-slate-800"
-        >
-          Add reminder
-        </button>
-      </form>
 
-      <div className="mt-8 grid gap-4">
-        {reminders.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 px-4 py-6 text-center text-sm text-slate-500">
-            No reminders yet. Schedule one above.
+        {error && (
+          <div className="mt-4 rounded-lg border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+            {error}
           </div>
-        ) : (
-          paginatedReminders.map((reminder) => (
-            <div
-              key={reminder.id}
-              className="rounded-3xl border border-slate-200 bg-white p-5"
-            >
-              {editingId === reminder.id ? (
-                <div className="space-y-4">
-                  <div>
-                    <label className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
-                      Title
-                    </label>
-                    <input
-                      value={editTitle}
-                      onChange={(event) => setEditTitle(event.target.value)}
-                      className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700 focus:border-slate-400 focus:outline-none"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
-                      Message
-                    </label>
-                    <input
-                      value={editMessage}
-                      onChange={(event) => setEditMessage(event.target.value)}
-                      className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700 focus:border-slate-400 focus:outline-none"
-                    />
-                  </div>
-                  <div className="grid gap-4 md:grid-cols-2">
+        )}
+
+        {message && (
+          <div className="mt-4 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+            {message}
+          </div>
+        )}
+
+        <form
+          onSubmit={handleCreate}
+          className="mt-8 rounded-2xl border border-stone-200 bg-white p-6 shadow-sm"
+        >
+          <h2 className="text-lg font-semibold text-stone-900">Add reminder</h2>
+          <div className="mt-4 grid gap-4 md:grid-cols-2">
+            <div>
+              <label className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-500">
+                Task
+              </label>
+              <select
+                value={taskId}
+                onChange={(event) => setTaskId(event.target.value)}
+                required
+                className="mt-2 w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm text-stone-700 focus:border-stone-500 focus:outline-none"
+              >
+                <option value="">Select a task</option>
+                {tasks.map((task) => (
+                  <option key={task.id} value={task.id}>
+                    {task.title}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-500">
+                Title
+              </label>
+              <input
+                value={title}
+                onChange={(event) => setTitle(event.target.value)}
+                required
+                className="mt-2 w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm text-stone-700 focus:border-stone-500 focus:outline-none"
+                placeholder="Check in on the task"
+              />
+            </div>
+            <div className="md:col-span-2">
+              <label className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-500">
+                Message
+              </label>
+              <input
+                value={reminderMessage}
+                onChange={(event) => setReminderMessage(event.target.value)}
+                className="mt-2 w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm text-stone-700 focus:border-stone-500 focus:outline-none"
+                placeholder="Optional message"
+              />
+            </div>
+            <div>
+              <label className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-500">
+                Schedule time
+              </label>
+              <input
+                type="datetime-local"
+                value={scheduledAt}
+                onChange={(event) => setScheduledAt(event.target.value)}
+                required
+                className="mt-2 w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm text-stone-700 focus:border-stone-500 focus:outline-none"
+              />
+            </div>
+            <div>
+              <label className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-500">
+                Type
+              </label>
+              <select
+                value={type}
+                onChange={(event) => setType(event.target.value as Reminder["type"])}
+                className="mt-2 w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm text-stone-700 focus:border-stone-500 focus:outline-none"
+              >
+                <option value="NOTIFICATION">Notification</option>
+                <option value="EMAIL">Email</option>
+                <option value="BOTH">Both</option>
+              </select>
+            </div>
+          </div>
+          <button
+            type="submit"
+            className="mt-4 rounded-lg bg-stone-900 px-5 py-2 text-sm font-semibold text-white transition hover:bg-stone-800"
+          >
+            Add reminder
+          </button>
+        </form>
+
+        <div className="mt-8 grid gap-4">
+          {reminders.length === 0 ? (
+            <div className="rounded-xl border border-dashed border-stone-300 bg-white px-4 py-6 text-center text-sm text-stone-500">
+              No reminders yet. Schedule one above.
+            </div>
+          ) : (
+            paginatedReminders.map((reminder) => (
+              <div
+                key={reminder.id}
+                className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm"
+              >
+                {editingId === reminder.id ? (
+                  <div className="space-y-4">
                     <div>
-                      <label className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
-                        Schedule time
+                      <label className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-500">
+                        Title
                       </label>
                       <input
-                        type="datetime-local"
-                        value={editScheduledAt}
-                        onChange={(event) => setEditScheduledAt(event.target.value)}
-                        className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700 focus:border-slate-400 focus:outline-none"
+                        value={editTitle}
+                        onChange={(event) => setEditTitle(event.target.value)}
+                        className="mt-2 w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm text-stone-700 focus:border-stone-500 focus:outline-none"
                       />
                     </div>
                     <div>
-                      <label className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
-                        Type
+                      <label className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-500">
+                        Message
                       </label>
-                      <select
-                        value={editType}
-                        onChange={(event) => setEditType(event.target.value as Reminder["type"])}
-                        className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700 focus:border-slate-400 focus:outline-none"
+                      <input
+                        value={editMessage}
+                        onChange={(event) => setEditMessage(event.target.value)}
+                        className="mt-2 w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm text-stone-700 focus:border-stone-500 focus:outline-none"
+                      />
+                    </div>
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <div>
+                        <label className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-500">
+                          Schedule time
+                        </label>
+                        <input
+                          type="datetime-local"
+                          value={editScheduledAt}
+                          onChange={(event) => setEditScheduledAt(event.target.value)}
+                          className="mt-2 w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm text-stone-700 focus:border-stone-500 focus:outline-none"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-500">
+                          Type
+                        </label>
+                        <select
+                          value={editType}
+                          onChange={(event) => setEditType(event.target.value as Reminder["type"])}
+                          className="mt-2 w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm text-stone-700 focus:border-stone-500 focus:outline-none"
+                        >
+                          <option value="NOTIFICATION">Notification</option>
+                          <option value="EMAIL">Email</option>
+                          <option value="BOTH">Both</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div className="flex flex-wrap gap-3">
+                      <button
+                        type="button"
+                        onClick={() => handleUpdate(reminder.id)}
+                        className="rounded-lg bg-stone-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-stone-800"
                       >
-                        <option value="NOTIFICATION">Notification</option>
-                        <option value="EMAIL">Email</option>
-                        <option value="BOTH">Both</option>
-                      </select>
+                        Save
+                      </button>
+                      <button
+                        type="button"
+                        onClick={cancelEdit}
+                        className="rounded-lg border border-stone-300 bg-white px-4 py-2 text-sm font-semibold text-stone-700 hover:bg-stone-50"
+                      >
+                        Cancel
+                      </button>
                     </div>
                   </div>
-                  <div className="flex flex-wrap gap-3">
-                    <button
-                      type="button"
-                      onClick={() => handleUpdate(reminder.id)}
-                      className="rounded-full bg-emerald-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-600"
-                    >
-                      Save
-                    </button>
-                    <button
-                      type="button"
-                      onClick={cancelEdit}
-                      className="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:border-slate-300"
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-                  <div>
-                    <h3 className="text-lg font-semibold text-slate-900">
-                      {reminder.title}
-                    </h3>
-                    <p className="mt-1 text-sm text-slate-600">
-                      {reminder.message}
-                    </p>
-                    <div className="mt-3 flex flex-wrap gap-2 text-xs text-slate-500">
-                      <span className="rounded-full bg-slate-100 px-3 py-1">
-                        {reminder.type.toLowerCase()}
-                      </span>
-                      <span className="rounded-full bg-slate-100 px-3 py-1">
-                        {new Date(reminder.scheduledAt).toLocaleString()}
-                      </span>
-                      {reminder.task && (
-                        <span className="rounded-full bg-slate-100 px-3 py-1">
-                          Task: {reminder.task.title}
+                ) : (
+                  <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+                    <div>
+                      <h3 className="text-lg font-semibold text-stone-900">
+                        {reminder.title}
+                      </h3>
+                      <p className="mt-1 text-sm text-stone-600">
+                        {reminder.message}
+                      </p>
+                      <div className="mt-3 flex flex-wrap gap-2 text-xs text-stone-600">
+                        <span className="rounded-full border border-stone-200 bg-stone-100 px-3 py-1">
+                          {reminder.type.toLowerCase()}
                         </span>
-                      )}
-                      <span className="rounded-full bg-slate-100 px-3 py-1">
-                        {reminder.isSent ? "Sent" : "Pending"}
-                      </span>
+                        <span className="rounded-full border border-stone-200 bg-stone-100 px-3 py-1">
+                          {new Date(reminder.scheduledAt).toLocaleString()}
+                        </span>
+                        {reminder.task && (
+                          <span className="rounded-full border border-stone-200 bg-stone-100 px-3 py-1">
+                            Task: {reminder.task.title}
+                          </span>
+                        )}
+                        <span
+                          className={`rounded-full border px-3 py-1 ${
+                            reminder.isSent
+                              ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+                              : "border-amber-200 bg-amber-50 text-amber-700"
+                          }`}
+                        >
+                          {reminder.isSent ? "Sent" : "Pending"}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        onClick={() => startEdit(reminder)}
+                        className="rounded-lg border border-stone-300 bg-white px-4 py-2 text-sm font-semibold text-stone-700 hover:bg-stone-50"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleDelete(reminder.id)}
+                        className="rounded-lg border border-rose-300 bg-white px-4 py-2 text-sm font-semibold text-rose-700 hover:bg-rose-50"
+                      >
+                        Delete
+                      </button>
                     </div>
                   </div>
-                  <div className="flex flex-wrap gap-2">
-                    <button
-                      type="button"
-                      onClick={() => startEdit(reminder)}
-                      className="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:border-slate-300"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleDelete(reminder.id)}
-                      className="rounded-full border border-rose-200 px-4 py-2 text-sm font-semibold text-rose-600 hover:border-rose-300"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-          ))
+                )}
+              </div>
+            ))
+          )}
+        </div>
+
+        {reminders.length > ITEMS_PER_PAGE && (
+          <div className="mt-6 flex items-center justify-end gap-3">
+            <button
+              type="button"
+              onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
+              disabled={currentPage === 1}
+              className="rounded-lg border border-stone-300 bg-white px-4 py-2 text-sm font-semibold text-stone-700 hover:bg-stone-50 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              Previous
+            </button>
+            <span className="text-sm text-stone-500">
+              Page {currentPage} of {totalPages}
+            </span>
+            <button
+              type="button"
+              onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
+              disabled={currentPage === totalPages}
+              className="rounded-lg border border-stone-300 bg-white px-4 py-2 text-sm font-semibold text-stone-700 hover:bg-stone-50 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              Next
+            </button>
+          </div>
         )}
       </div>
-
-      {reminders.length > ITEMS_PER_PAGE && (
-        <div className="mt-6 flex items-center justify-end gap-3">
-          <button
-            type="button"
-            onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
-            disabled={currentPage === 1}
-            className="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:border-slate-300 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            Previous
-          </button>
-          <span className="text-sm text-slate-500">
-            Page {currentPage} of {totalPages}
-          </span>
-          <button
-            type="button"
-            onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
-            disabled={currentPage === totalPages}
-            className="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 hover:border-slate-300 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            Next
-          </button>
-        </div>
-      )}
     </div>
   );
 }
