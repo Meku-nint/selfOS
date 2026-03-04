@@ -39,6 +39,7 @@ type DashboardTask = {
   id: string;
   title: string;
   status: string;
+  priority?: "LOW" | "MEDIUM" | "HIGH" | "URGENT";
   dueDate: string | null;
 };
 
@@ -106,6 +107,21 @@ const formatStatus = (status: string) =>
     .toLowerCase()
     .replace(/_/g, " ")
     .replace(/\b\w/g, (char) => char.toUpperCase());
+
+const priorityWeight = (priority?: string) => {
+  switch (priority) {
+    case "URGENT":
+      return 4;
+    case "HIGH":
+      return 3;
+    case "MEDIUM":
+      return 2;
+    case "LOW":
+      return 1;
+    default:
+      return 2;
+  }
+};
 
 const formatTime = (value: string | null) => {
   if (!value) return "No due time";
@@ -181,7 +197,23 @@ export default function DashboardPage() {
     [dashboard?.heatmap]
   );
 
-  const todayTasks = dashboard?.todayTasks || [];
+  const todayTasks = useMemo(() => dashboard?.todayTasks || [], [dashboard?.todayTasks]);
+  const sortedTodayTasks = useMemo(() => {
+    return [...todayTasks].sort((a, b) => {
+      const priorityDiff = priorityWeight(b.priority) - priorityWeight(a.priority);
+      if (priorityDiff !== 0) return priorityDiff;
+
+      if (!a.dueDate && !b.dueDate) return 0;
+      if (!a.dueDate) return 1;
+      if (!b.dueDate) return -1;
+      return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
+    });
+  }, [todayTasks]);
+
+  const highPriorityCount = useMemo(
+    () => todayTasks.filter((task) => task.priority === "HIGH" || task.priority === "URGENT").length,
+    [todayTasks]
+  );
   const weeklyProductivity = dashboard?.weeklyProductivity || [];
   const monthlyProductivity = dashboard?.monthlyProductivity || [];
   const resources = dashboard?.resources || { books: [], speakers: [] };
@@ -222,7 +254,7 @@ export default function DashboardPage() {
               href="/journal"
               className="rounded-lg bg-stone-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-stone-800"
             >
-              New journal entry
+              journal entry
             </Link>
           </div>
         </div>
@@ -249,10 +281,15 @@ export default function DashboardPage() {
                 <h2 className="text-lg font-semibold text-stone-900">Today&apos;s tasks</h2>
                 <p className="text-sm text-stone-500">Keep today light, clear, and intentional.</p>
               </div>
-              <span className="rounded-full bg-stone-100 px-3 py-1 text-xs font-medium text-stone-700">
+              <span className="rounded-xl bg-stone-100 px-3 py-1 text-xs font-medium text-stone-700">
                 {todayTasks.length} active
               </span>
             </div>
+            {highPriorityCount > 0 && (
+              <p className="mt-2 text-xs font-semibold uppercase tracking-[0.12em] text-rose-700">
+                {highPriorityCount} high-priority task{highPriorityCount > 1 ? "s" : ""} need focus
+              </p>
+            )}
 
             <div className="mt-5 space-y-2">
               {todayTasks.length === 0 ? (
@@ -263,17 +300,47 @@ export default function DashboardPage() {
                   </Link>
                 </div>
               ) : (
-                todayTasks.map((task) => (
-                  <div key={task.id} className="rounded-xl border border-stone-200 bg-stone-50 px-4 py-3">
+                sortedTodayTasks.map((task) => {
+                  const isHighPriority = task.priority === "HIGH" || task.priority === "URGENT";
+                  const isUrgent = task.priority === "URGENT";
+
+                  return (
+                  <div
+                    key={task.id}
+                    className={`rounded-xl px-4 py-3 ${
+                      isUrgent
+                        ? "border border-rose-300 bg-rose-50"
+                        : isHighPriority
+                        ? "border border-amber-300 bg-amber-50"
+                        : "border border-stone-200 bg-stone-50"
+                    }`}
+                  >
                     <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                      <p className="text-sm font-medium text-stone-900">{task.title}</p>
-                      <span className="w-fit rounded-full border border-stone-300 bg-white px-2.5 py-1 text-xs text-stone-600">
-                        {formatStatus(task.status)}
-                      </span>
+                      <p className={`text-sm ${isHighPriority ? "font-semibold text-stone-950" : "font-medium text-stone-900"}`}>
+                        {task.title}
+                      </p>
+                      <div className="flex flex-wrap items-center gap-2">
+                        {task.priority && (
+                          <span
+                            className={`w-fit rounded-full px-2.5 py-1 text-xs font-semibold ${
+                              isUrgent
+                                ? "border border-rose-300 bg-rose-100 text-rose-800"
+                                : isHighPriority
+                                ? "border border-amber-300 bg-amber-100 text-amber-800"
+                                : "border border-stone-300 bg-white text-stone-600"
+                            }`}
+                          >
+                            {task.priority}
+                          </span>
+                        )}
+                        <span className="w-fit rounded-full border border-stone-300 bg-white px-2.5 py-1 text-xs text-stone-600">
+                          {formatStatus(task.status)}
+                        </span>
+                      </div>
                     </div>
                     <p className="mt-1 text-xs text-stone-500">Due: {formatTime(task.dueDate)}</p>
                   </div>
-                ))
+                )})
               )}
             </div>
 
