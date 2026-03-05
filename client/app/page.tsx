@@ -1,5 +1,5 @@
 "use client";
-
+import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -140,11 +140,18 @@ export default function HomePage() {
         <section className="relative mx-auto max-w-7xl px-4 pb-14 sm:px-6 lg:px-8">
           <div className="grid items-center gap-10 lg:grid-cols-[1.2fr_0.8fr]">
             <div>
-              <p className="mb-5 inline-flex rounded-full border border-red-200 bg-white px-4 py-1.5 text-xs font-medium tracking-wide text-red-700 sm:text-sm">
-            Your personal productivity OS
-              </p>
-              <h1 className="text-4xl font-semibold leading-tight tracking-tight text-stone-950 sm:text-5xl lg:text-6xl">
-Your personal operating system for focus and progress.              </h1>
+             
+          <motion.h1
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{
+        duration: 0.7,
+        ease: "easeOut",
+      }}
+      className="text-2xl font-semibold leading-tight tracking-tight text-stone-950 sm:text-5xl lg:text-6xl"
+    >
+      Your personal operating system for focus and progress.
+    </motion.h1>
               <p className="mt-6 max-w-2xl text-base leading-relaxed text-stone-600 sm:text-lg">
                 selfOS brings tasks, goals, reminders, journaling, and progress analytics into one calm workflow designed
                 for consistency.
