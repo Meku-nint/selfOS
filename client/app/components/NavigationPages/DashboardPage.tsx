@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { CheckCircle2, Flame, Gauge } from "lucide-react";
 import { getAuthToken } from "../../lib/auth";
 
 function normalizeBaseUrl(rawUrl: string | undefined, fallbackUrl: string, protocol: "http" | "https" = "https") {
@@ -229,10 +230,9 @@ export default function DashboardPage() {
         <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-500">Dashboard</p>
-            <h1 className="mt-2 text-3xl font-semibold tracking-tight text-stone-900">Your momentum, at a glance</h1>
+            <h1 className="mt-2 text-3xl font-semibold tracking-tight text-stone-900">Your personal command center</h1>
             <p className="mt-2 max-w-2xl text-sm text-stone-600">
-              Track what matters today, reflect on patterns, and keep your focus clear.
-            </p>
+           Run your life with clarity, focus, and consistent progress.            </p>
             {loading && <p className="mt-2 text-sm text-stone-500">Loading dashboard...</p>}
             {error && <p className="mt-2 text-sm text-rose-600">{error}</p>}
           </div>
@@ -261,15 +261,24 @@ export default function DashboardPage() {
 
         <div className="mt-8 grid gap-4 sm:grid-cols-3">
           <div className="rounded-xl border border-stone-200 bg-white p-4 shadow-sm">
-            <p className="text-xs uppercase tracking-[0.16em] text-stone-500">Tasks done</p>
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="h-4 w-4 text-emerald-600" strokeWidth={1.75} />
+              <p className="text-xs uppercase tracking-[0.16em] text-stone-500">Completed tasks</p>
+            </div>
             <p className="mt-2 text-3xl font-semibold text-stone-900">{analytics.tasksDone}</p>
           </div>
           <div className="rounded-xl border border-stone-200 bg-white p-4 shadow-sm">
-            <p className="text-xs uppercase tracking-[0.16em] text-stone-500">Streak days</p>
+            <div className="flex items-center gap-2">
+              <Flame className="h-4 w-4 text-amber-600" strokeWidth={1.75} />
+              <p className="text-xs uppercase tracking-[0.16em] text-stone-500">Focus streak</p>
+            </div>
             <p className="mt-2 text-3xl font-semibold text-stone-900">{analytics.streakDays}</p>
           </div>
           <div className="rounded-xl border border-stone-200 bg-white p-4 shadow-sm">
-            <p className="text-xs uppercase tracking-[0.16em] text-stone-500">Average score</p>
+            <div className="flex items-center gap-2">
+              <Gauge className="h-4 w-4 text-slate-600" strokeWidth={1.75} />
+              <p className="text-xs uppercase tracking-[0.16em] text-stone-500">Focus score</p>
+            </div>
             <p className="mt-2 text-3xl font-semibold text-stone-900">{analytics.avgScore}</p>
           </div>
         </div>
@@ -279,7 +288,7 @@ export default function DashboardPage() {
             <div className="flex items-center justify-between gap-3">
               <div>
                 <h2 className="text-lg font-semibold text-stone-900">Today&apos;s tasks</h2>
-                <p className="text-sm text-stone-500">Keep today light, clear, and intentional.</p>
+                <p className="text-sm text-stone-500">Focus on what matters most today.</p>
               </div>
               <span className="rounded-xl bg-stone-100 px-3 py-1 text-xs font-medium text-stone-700">
                 {todayTasks.length} active
@@ -439,7 +448,7 @@ export default function DashboardPage() {
         <div className="mt-8 grid gap-6 lg:grid-cols-2">
           <section className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
             <h2 className="text-lg font-semibold text-stone-900">Weekly productivity</h2>
-            <p className="text-sm text-stone-500">Daily focus score.</p>
+            <p className="text-sm text-stone-500">See how focused you were each day.</p>
             <div className="mt-5 space-y-3">
               {weeklyProductivity.length === 0 ? (
                 <p className="text-sm text-stone-500">No data yet.</p>
@@ -461,7 +470,7 @@ export default function DashboardPage() {
 
           <section className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
             <h2 className="text-lg font-semibold text-stone-900">Monthly productivity</h2>
-            <p className="text-sm text-stone-500">Weekly focus score.</p>
+            <p className="text-sm text-stone-500">Your focus performance by week</p>
             <div className="mt-5 space-y-3">
               {monthlyProductivity.length === 0 ? (
                 <p className="text-sm text-stone-500">No data yet.</p>
