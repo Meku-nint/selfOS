@@ -214,11 +214,11 @@ export default function AppNavbar() {
 										className={`group flex items-center gap-3 px-3 py-3 rounded-lg text-sm transition-all ${
 											isActive
 												? "bg-slate-100 text-slate-900"
-												: "text-slate-700 hover:bg-slate-50 hover:text-slate-900"
+												: "text-slate-200 hover:bg-slate-50 hover:text-slate-900"
 										}`}
 									>
 										<svg
-											className={`h-5 w-5 ${isActive ? "text-slate-900" : "text-slate-400"}`}
+											className={`h-5 w-5 ${isActive ? "text-slate-900" : "text-slate-200"}`}
 											fill="none"
 											viewBox="0 0 24 24"
 											stroke="currentColor"
