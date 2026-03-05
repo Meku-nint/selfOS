@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { Menu } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { clearAuthToken, getAuthToken } from "../lib/auth";
 
@@ -95,8 +96,8 @@ export default function AppNavbar() {
 			ref={headerRef}
 			className={`sticky top-0 z-50 transition-all duration-300 ${
 				scrolled
-					? "bg-white/90 backdrop-blur-md shadow-sm border-b border-gray-500/30"
-					: "bg-white/80 border-b border-slate-200/50"
+					? "bg-rose-900/90 backdrop-blur-md shadow-sm border-b border-gray-500/30"
+					: "bg-red-900/90 border-b border-slate-200/50"
 			}`}
 		>
 			<div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -107,7 +108,7 @@ export default function AppNavbar() {
 				</Link>
 
 					{/* Desktop Navigation */}
-					<nav className="hidden md:flex md:items-center md:gap-1">
+					<nav className="hidden md:flex md:items-center md:gap-1 ">
 						{NAV_ITEMS.map((item) => {
 							const isActive = pathname === item.href;
 							return (
@@ -185,16 +186,14 @@ export default function AppNavbar() {
 					<button
 						aria-label="Toggle navigation"
 						onClick={() => setOpen((s) => !s)}
-						className="md:hidden inline-flex items-center justify-center h-10 w-10 rounded-lg border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 transition-colors"
+						className="md:hidden inline-flex items-center justify-center h-10 w-10 text-white font-semibold transition-colors"
 					>
 						{open ? (
-							<svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<svg className="h-7 w-7 font-semibold" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 								<path strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
 							</svg>
 						) : (
-							<svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-								<path strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-							</svg>
+							<Menu className="h-7 w-7" strokeWidth={1.5} />
 						)}
 					</button>
 				</div>
