@@ -536,11 +536,11 @@ export default function JournalPage() {
                       <h3 className="text-lg font-semibold text-stone-900">
                         {entry.title || "Untitled entry"}
                       </h3>
-                      <p className="mt-2 text-sm text-stone-600 leading-relaxed">
+                      <p className="mt-2 text-sm text-stone-600  leading-relaxed">
                         {entry.content}
                       </p>
                       
-                      <div className="mt-4 flex flex-wrap items-center gap-2 text-xs">
+                      <div className="mt-4 flex flex-wrap items-center gap-1 text-xs">
                         <span className="flex items-center gap-1 rounded-full bg-stone-100 px-3 py-1.5 text-stone-600">
                           <Calendar className="h-3 w-3" />
                           {new Date(entry.createdAt).toLocaleDateString('en-US', { 
