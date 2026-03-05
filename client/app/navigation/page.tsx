@@ -250,10 +250,10 @@ export default function AppNavbar() {
 							<button
 								type="button"
 								onClick={handleLogout}
-								className="flex items-center gap-3 px-3 py-3 rounded-lg text-sm text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-all"
+								className="flex items-center gap-3 px-3 py-3 rounded-lg text-sm text-slate-200 hover:bg-slate-50 hover:text-slate-900 transition-all"
 							>
 								<svg
-									className="h-5 w-5 text-slate-400"
+									className="h-5 w-5 text-slate-200"
 									fill="none"
 									viewBox="0 0 24 24"
 									stroke="currentColor"
