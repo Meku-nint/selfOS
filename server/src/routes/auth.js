@@ -2,10 +2,53 @@ import express from 'express';
 import bcrypt from 'bcryptjs';
 import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
+import { Resend } from 'resend';
 import { prisma } from '../config/database.js';
 import { generateToken, generateOTP } from '../middleware/auth.js';
 
 const router = express.Router();
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
+const resendFromEmail = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
+
+async function sendOtpEmail({ email, firstName, otp }) {
+  if (!resend) {
+    console.warn('RESEND_API_KEY is not configured. OTP email was not sent.');
+    return false;
+  }
+
+  try {
+    const { data, error } = await resend.emails.send({
+      from: resendFromEmail,
+      to: email,
+      subject: 'SelfOS verification code',
+      html: `
+        <div style="font-family:Arial,sans-serif;line-height:1.5;color:#1f2937">
+          <h2 style="margin:0 0 12px;color:#7f1d1d">Welcome to SelfOS</h2>
+          <p style="margin:0 0 10px">Hi ${firstName || 'there'},</p>
+          <p style="margin:0 0 10px">Use this OTP to verify your account:</p>
+          <p style="margin:0 0 12px;font-size:28px;font-weight:700;letter-spacing:3px;color:#111827">${otp}</p>
+          <p style="margin:0;color:#6b7280">This code expires in 10 minutes.</p>
+        </div>
+      `,
+      text: `Welcome to SelfOS. Your OTP is ${otp}. This code expires in 10 minutes.`,
+    });
+
+    if (error) {
+      console.error('Resend OTP API error:', error);
+      return false;
+    }
+
+    if (!data?.id) {
+      console.error('Resend OTP API returned no message id');
+      return false;
+    }
+
+    return true;
+  } catch (error) {
+    console.error('Send OTP email error:', error);
+    return false;
+  }
+}
 
 function normalizeBaseUrl(rawUrl, fallbackUrl, protocol = 'https') {
   const value = (rawUrl || '').trim();
@@ -131,10 +174,16 @@ router.post('/register', async (req, res) => {
       },
     });
 
-    console.log(`OTP for ${email}: ${otp}`); // Development only
+    const emailSent = await sendOtpEmail({ email, firstName, otp });
+
+    if (!emailSent) {
+      console.log(`OTP fallback log for ${email}: ${otp}`);
+    }
 
     res.status(201).json({ 
-      message: 'User registered successfully. Please check your email for OTP.',
+      message: emailSent
+        ? 'User registered successfully. Please check your email for OTP.'
+        : 'User registered, but OTP email could not be sent right now. Please use resend OTP.',
       userId: user.id
     });
   } catch (error) {
@@ -203,7 +252,11 @@ router.post('/resend-otp', async (req, res) => {
       data: { otpCode: otp, otpExpiresAt },
     });
 
-    console.log(`Resent OTP for ${email}: ${otp}`); // Development only
+    const emailSent = await sendOtpEmail({ email, firstName: user.firstName, otp });
+    if (!emailSent) {
+      console.log(`Resend OTP fallback log for ${email}: ${otp}`);
+      return res.status(503).json({ message: 'Could not send OTP email right now. Please try again.' });
+    }
 
     res.json({ message: 'A new OTP has been sent. Please check your email.' });
   } catch (error) {
