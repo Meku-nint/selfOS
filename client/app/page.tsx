@@ -56,11 +56,12 @@ export default function HomePage() {
         <div className="mx-auto flex h-18 w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <Link href="/" className="flex items-center gap-2" onClick={closeMenu}>
             <Image
-              src="/logo.png"
+              src="/selfos-logo.svg"
               alt="selfOS logo"
-              width={96}
-              height={40}
-              className="h-10 w-24 rounded-lg border border-stone-200 bg-white object-cover"
+              width={220}
+              height={72}
+              className="h-10 w-auto max-w-44 object-contain"
+              priority
             />
           </Link>
 

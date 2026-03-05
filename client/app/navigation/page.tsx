@@ -104,7 +104,14 @@ export default function AppNavbar() {
 				<div className="flex h-16 items-center justify-between">
 					{/* Logo */}
 				<Link href="/dashboard" className="flex items-center gap-2 group">
-					<Image src="/logo.png" alt="selfOS logo" width={96} height={40} className="h-10 w-24 object-cover border  border-slate-200 rounded" priority />
+					<Image
+						src="/selfos-logo.svg"
+						alt="selfOS logo"
+						width={220}
+						height={72}
+						className="h-10 w-auto max-w-44 object-contain"
+						priority
+					/>
 				</Link>
 
 					{/* Desktop Navigation */}

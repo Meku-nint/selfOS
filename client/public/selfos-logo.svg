@@ -1,0 +1,22 @@
+<svg width="220" height="72" viewBox="0 0 220 72" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="selfosLogoTitle selfosLogoDesc">
+  <title id="selfosLogoTitle">selfOS logo</title>
+  <desc id="selfosLogoDesc">Rounded badge with SO monogram and selfOS wordmark.</desc>
+
+  <defs>
+    <linearGradient id="badgeGradient" x1="8" y1="8" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#7F1D1D" />
+      <stop offset="1" stop-color="#B91C1C" />
+    </linearGradient>
+    <linearGradient id="sparkGradient" x1="16" y1="52" x2="56" y2="18" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FCA5A5" />
+      <stop offset="1" stop-color="#FEE2E2" />
+    </linearGradient>
+  </defs>
+
+  <rect x="8" y="8" width="56" height="56" rx="16" fill="url(#badgeGradient)" />
+  <path d="M47.5 20L24 41.5H38.8L34 52L56 31.2H42.5L47.5 20Z" fill="url(#sparkGradient)" />
+  <path d="M20 24.5C22.7 20.6 27 18 32 18C38.5 18 43.8 22.7 44.8 28.9" stroke="#FEE2E2" stroke-width="3" stroke-linecap="round" />
+
+  <text x="79" y="31" fill="#F8FAFC" font-size="24" font-weight="700" letter-spacing="0.2" font-family="Segoe UI, system-ui, -apple-system, sans-serif">selfOS</text>
+  <text x="80" y="50" fill="#FCA5A5" font-size="11" font-weight="600" letter-spacing="1.8" font-family="Segoe UI, system-ui, -apple-system, sans-serif">FOCUS. BUILD. REPEAT.</text>
+</svg>

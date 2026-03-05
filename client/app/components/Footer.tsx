@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { useState } from "react";
+import Image from "next/image";
 
 export default function Footer() {
   const pathname = usePathname();
@@ -21,7 +22,15 @@ export default function Footer() {
     <footer className="border-t border-stone-200 bg-white">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="border-b border-stone-200 pb-10">
-          <h2 className="text-2xl font-semibold tracking-tight text-stone-900">selfOS</h2>
+          <Link href="/" className="inline-flex items-center">
+            <Image
+              src="/selfos-logo.svg"
+              alt="selfOS logo"
+              width={220}
+              height={72}
+              className="h-10 w-auto min-w-40 object-contain bg-red-950  rounded"
+            />
+          </Link>
           <p className="mt-3 max-w-md text-sm leading-relaxed text-stone-600">
             Your personal operating system for clarity, focus, and progress.
           </p>
