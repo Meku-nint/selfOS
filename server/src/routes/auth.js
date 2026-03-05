@@ -176,6 +176,42 @@ router.post('/verify-otp', async (req, res) => {
   }
 });
 
+// Resend OTP
+router.post('/resend-otp', async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ message: 'Email is required' });
+    }
+
+    const user = await prisma.user.findUnique({ where: { email } });
+
+    if (!user) {
+      return res.status(404).json({ message: 'No user found with this email' });
+    }
+
+    if (user.isVerified) {
+      return res.status(400).json({ message: 'Your email is already verified. Please sign in.' });
+    }
+
+    const otp = generateOTP();
+    const otpExpiresAt = new Date(Date.now() + 10 * 60 * 1000);
+
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { otpCode: otp, otpExpiresAt },
+    });
+
+    console.log(`Resent OTP for ${email}: ${otp}`); // Development only
+
+    res.json({ message: 'A new OTP has been sent. Please check your email.' });
+  } catch (error) {
+    console.error('Resend OTP error:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
 // Login
 router.post('/login', async (req, res) => {
   try {

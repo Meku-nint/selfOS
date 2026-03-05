@@ -1,8 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useEffect, useState } from "react";
 import { Suspense } from "react";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
 import { getAuthToken, setAuthToken } from "../lib/auth";
@@ -23,6 +23,8 @@ function normalizeBaseUrl(rawUrl: string | undefined, fallbackUrl: string, proto
 
 const API_URL = normalizeBaseUrl(process.env.NEXT_PUBLIC_API_URL, "http://localhost:4000", "https");
 type View = "login" | "register" | "verify";
+const inputClassName = "w-full px-4 py-3 bg-white border border-red-100 rounded-xl focus:border-red-300 focus:outline-none focus:ring-2 focus:ring-red-100 transition-all text-red-950 placeholder:text-red-900/30";
+const primaryButtonClassName = "w-full py-3.5 px-4 bg-linear-to-r from-red-950 to-red-900 hover:from-red-900 hover:to-red-800 text-white font-medium rounded-xl transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed";
 
 export default function LoginPage() {
   return (
@@ -126,6 +128,7 @@ function LoginPageContent() {
         email: registerEmail,
         password: registerPassword,
       });
+      setOtp("");
       setSuccess("OTP sent to your email. Enter it to verify.");
       setView("verify");
     } catch (err: unknown) {
@@ -162,8 +165,32 @@ function LoginPageContent() {
     }
   }
 
+  async function handleResendOtp() {
+    resetMessages();
+
+    if (!registerEmail) {
+      setError("Enter your email in registration before resending OTP.");
+      setView("register");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await axios.post(`${API_URL}/auth/resend-otp`, { email: registerEmail });
+      setSuccess("A new OTP has been sent to your email.");
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        setError(err.response?.data?.message || err.message);
+      } else {
+        setError("Unknown error");
+      }
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
-    <div className="min-h-screen bg-linear-to-br from-red-50/10 via-red-50/10 to-red-50/50 flex items-center justify-center px-4 py-8 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-linear-to-br from-red-50/20 via-white to-red-50/40 flex items-center justify-center px-4 py-8 sm:px-6 lg:px-8">
       {/* Background decorative elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -right-40 h-80 w-80 rounded-full bg-red-100/30 blur-3xl"></div>
@@ -172,10 +199,12 @@ function LoginPageContent() {
 
       <div className="w-full max-w-md relative">
         {/* Main card */}
-        <div className="relative bg-white/90 backdrop-blur-xl rounded-2xl border border-red-100/50 shadow-xl p-6 sm:p-7">
+        <div className="relative bg-white/90 backdrop-blur-xl rounded-2xl border border-red-100/60 shadow-xl p-6 sm:p-7">
           {/* Logo and header */}
           <div className="text-center mb-6">
-    
+            <Link href="/" className="inline-flex items-center text-xs text-red-900/45 hover:text-red-700 transition-colors mb-3">
+              ← Back to home
+            </Link>
             <h1 className="text-3xl font-light tracking-tight text-red-950 mb-1.5">selfOS</h1>
             <p className="text-sm text-red-900/50 font-light">
               {view === "verify" 
@@ -220,7 +249,7 @@ function LoginPageContent() {
                   type="email"
                   value={loginEmail}
                   onChange={(e) => setLoginEmail(e.target.value)}
-                  className="w-full px-4 py-3 bg-white border border-red-100 rounded-xl focus:border-red-300 focus:outline-none focus:ring-2 focus:ring-red-100 transition-all text-red-950 placeholder:text-red-900/30"
+                  className={inputClassName}
                   placeholder="name@company.com"
                 />
               </div>
@@ -234,7 +263,7 @@ function LoginPageContent() {
                   type="password"
                   value={loginPassword}
                   onChange={(e) => setLoginPassword(e.target.value)}
-                  className="w-full px-4 py-3 bg-white border border-red-100 rounded-xl focus:border-red-300 focus:outline-none focus:ring-2 focus:ring-red-100 transition-all text-red-950 placeholder:text-red-900/30"
+                  className={inputClassName}
                   placeholder="Enter your password"
                 />
               </div>
@@ -248,7 +277,7 @@ function LoginPageContent() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3.5 px-4 bg-linear-to-r from-red-950 to-red-900 hover:from-red-900 hover:to-red-800 text-white font-medium rounded-xl transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                className={primaryButtonClassName}
               >
                 {loading ? "Signing in..." : "Sign in"}
               </button>
@@ -313,7 +342,7 @@ function LoginPageContent() {
                     type="text"
                     value={registerFirstName}
                     onChange={(e) => setRegisterFirstName(e.target.value)}
-                    className="w-full px-4 py-3 bg-white border border-red-100 rounded-xl focus:border-red-300 focus:outline-none focus:ring-2 focus:ring-red-100 transition-all text-red-950 placeholder:text-red-900/30"
+                    className={inputClassName}
                     placeholder="John"
                   />
                 </div>
@@ -326,7 +355,7 @@ function LoginPageContent() {
                     type="text"
                     value={registerLastName}
                     onChange={(e) => setRegisterLastName(e.target.value)}
-                    className="w-full px-4 py-3 bg-white border border-red-100 rounded-xl focus:border-red-300 focus:outline-none focus:ring-2 focus:ring-red-100 transition-all text-red-950 placeholder:text-red-900/30"
+                    className={inputClassName}
                     placeholder="Doe"
                   />
                 </div>
@@ -341,7 +370,7 @@ function LoginPageContent() {
                   type="email"
                   value={registerEmail}
                   onChange={(e) => setRegisterEmail(e.target.value)}
-                  className="w-full px-4 py-3 bg-white border border-red-100 rounded-xl focus:border-red-300 focus:outline-none focus:ring-2 focus:ring-red-100 transition-all text-red-950 placeholder:text-red-900/30"
+                  className={inputClassName}
                   placeholder="name@company.com"
                 />
               </div>
@@ -355,7 +384,7 @@ function LoginPageContent() {
                   type="password"
                   value={registerPassword}
                   onChange={(e) => setRegisterPassword(e.target.value)}
-                  className="w-full px-4 py-3 bg-white border border-red-100 rounded-xl focus:border-red-300 focus:outline-none focus:ring-2 focus:ring-red-100 transition-all text-red-950 placeholder:text-red-900/30"
+                  className={inputClassName}
                   placeholder="Create a strong password"
                 />
                 <p className="mt-2 text-xs text-red-900/40 font-light">
@@ -366,7 +395,7 @@ function LoginPageContent() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3.5 px-4 bg-linear-to-r from-red-950 to-red-900 hover:from-red-900 hover:to-red-800 text-white font-medium rounded-xl transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed mt-2"
+                className={`${primaryButtonClassName} mt-2`}
               >
                 {loading ? "Creating account..." : "Create account"}
               </button>
@@ -409,7 +438,7 @@ function LoginPageContent() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3.5 px-4 bg-linear-to-r from-red-950 to-red-900 hover:from-red-900 hover:to-red-800 text-white font-medium rounded-xl transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                className={primaryButtonClassName}
               >
                 {loading ? "Verifying..." : "Verify email"}
               </button>
@@ -424,10 +453,7 @@ function LoginPageContent() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => {
-                    resetMessages();
-                    handleRegister(new Event('click') as any);
-                  }}
+                  onClick={handleResendOtp}
                   className="text-red-700 hover:text-red-800 font-medium transition-colors"
                 >
                   Resend code

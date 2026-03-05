@@ -34,20 +34,17 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-b from-red-50/10 to-red-50/20">
+    <div className="min-h-screen bg-linear-to-b from-red-50/30 via-white to-red-50/40">
       <header
-        className={`fixed top-0 inset-x-0 z-25 transition-transform duration-200 will-change-transform border-b-2 border-red-200 ${
+        className={`fixed top-0 inset-x-0 z-25 transition-all duration-200 will-change-transform border-b border-red-100/70 ${
           isScrolled
-            ? "bg-white/90 shadow-md backdrop-blur-md translate-y-0"
+            ? "bg-sky-400/85 shadow-sm backdrop-blur-xl translate-y-0"
             : "bg-transparent shadow-none backdrop-blur-0 translate-y-0"
         }`}
       >
         <div className="w-full px-4 sm:px-8 lg:px-16 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2" onClick={closeMenu}>
-            <Image src="/logo.png" alt="selfOS logo" width={36} height={36} className="h-9 w-9 rounded-xl object-cover bg-white border border-red-200/50 shadow-sm" />
-            <span className={`text-2xl sm:text-3xl font-light tracking-tight transition-colors duration-200 ${
-              isScrolled ? "text-red-950" : "text-red-950"
-            }`}>selfOS</span>
+            <Image src="/logo.png" alt="selfOS logo" width={36} height={36} className="h-9 w-24 rounded-xl object-cover bg-white border border-red-200/50 shadow-sm" />  
           </Link>
 
           <nav className="flex items-center gap-2 sm:gap-6 text-sm sm:text-base">
@@ -56,7 +53,7 @@ export default function HomePage() {
             }`}>Contact Us</a>
             <Link
               href="/login"
-              className={`px-4 sm:px-6 py-2 rounded-md bg-red-950 text-white font-medium hover:bg-red-900 transition-colors tracking-wide ${
+              className={`px-4 sm:px-6 py-2.5 rounded-lg bg-red-950 text-white font-medium hover:bg-red-900 transition-colors tracking-wide ${
                 isScrolled ? "shadow-sm" : ""
               }`}
             >
@@ -115,29 +112,41 @@ export default function HomePage() {
       </header>
 
       <main className="px-4 sm:px-8 lg:px-16 pt-32 pb-20 relative z-0">
-        <section className="max-w-4xl mx-auto text-center">
-          <p className="inline-flex px-4 py-1.5 rounded-full text-xs sm:text-sm bg-white/70 border border-red-200/50 text-red-700 mb-6 tracking-wide">
+        <div className="pointer-events-none absolute inset-0 overflow-hidden">
+          <div className="absolute -top-24 right-8 h-60 w-60 rounded-full bg-red-100/40 blur-3xl" />
+          <div className="absolute bottom-0 left-0 h-72 w-72 rounded-full bg-red-100/35 blur-3xl" />
+        </div>
+
+        <section className="max-w-5xl mx-auto text-center relative">
+          <p className="inline-flex px-4 py-1.5 rounded-full text-xs sm:text-sm bg-white/80 border border-red-200/60 text-red-700 mb-6 tracking-wide shadow-sm">
             Your personal productivity OS
           </p>
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-light leading-tight text-red-950">
-            Clarity, focus, and progress in one place.
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-light leading-tight tracking-tight text-red-950">
+            Clarity, focus, and progress in one calm workspace.
           </h1>
-          <p className="mt-6 text-base sm:text-lg text-red-900/60 max-w-2xl mx-auto font-light">
+          <p className="mt-6 text-base sm:text-lg text-red-900/60 max-w-2xl mx-auto font-light leading-relaxed">
             selfOS helps you manage tasks, reminders, goals, journaling, and analytics so you can plan better and move faster.
           </p>
-          <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
+          <div className="mt-9 flex flex-col sm:flex-row justify-center gap-4">
             <Link
               href="/login"
-              className="px-8 py-3 rounded-md bg-red-950 text-white font-medium hover:bg-red-900 transition-colors tracking-wide"
+              className="px-8 py-3 rounded-lg bg-red-950 text-white font-medium hover:bg-red-900 transition-colors tracking-wide shadow-sm"
             >
               Get Started
             </Link>
             <Link
               href="/login"
-              className="px-8 py-3 rounded-md border border-red-200 bg-white/50 text-red-950 font-medium hover:bg-red-50 transition-colors tracking-wide"
+              className="px-8 py-3 rounded-lg border border-red-200 bg-white/70 text-red-950 font-medium hover:bg-red-50 transition-colors tracking-wide"
             >
               Login
             </Link>
+          </div>
+
+          <div className="mt-10 flex flex-wrap justify-center gap-2 text-xs sm:text-sm text-red-900/55">
+            <span className="px-3 py-1 rounded-full border border-red-200/70 bg-white/70">Tasks</span>
+            <span className="px-3 py-1 rounded-full border border-red-200/70 bg-white/70">Goals</span>
+            <span className="px-3 py-1 rounded-full border border-red-200/70 bg-white/70">Journal</span>
+            <span className="px-3 py-1 rounded-full border border-red-200/70 bg-white/70">Analytics</span>
           </div>
         </section>
       </main>
