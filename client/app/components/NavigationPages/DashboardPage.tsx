@@ -326,6 +326,15 @@ export default function DashboardPage() {
                 sortedTodayTasks.map((task) => {
                   const isHighPriority = task.priority === "HIGH" || task.priority === "URGENT";
                   const isUrgent = task.priority === "URGENT";
+                  const normalizedStatus = task.status.toUpperCase();
+                  const statusClass =
+                    normalizedStatus === "IN_PROGRESS"
+                      ? "border border-sky-300 bg-sky-100 text-sky-800"
+                      : normalizedStatus === "PENDING"
+                      ? "border border-violet-300 bg-violet-100 text-violet-800"
+                      : normalizedStatus === "COMPLETED" || normalizedStatus === "DONE"
+                      ? "border border-emerald-300 bg-emerald-100 text-emerald-800"
+                      : "border border-stone-300 bg-white text-stone-600";
 
                   return (
                   <div
@@ -356,7 +365,7 @@ export default function DashboardPage() {
                             {task.priority}
                           </span>
                         )}
-                        <span className="w-fit rounded-full border border-stone-300 bg-white px-2.5 py-1 text-xs text-stone-600">
+                        <span className={`w-fit rounded-full px-2.5 py-1 text-xs ${statusClass}`}>
                           {formatStatus(task.status)}
                         </span>
                       </div>
