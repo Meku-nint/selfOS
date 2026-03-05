@@ -153,6 +153,7 @@ export default function DashboardPage() {
   const [dashboard, setDashboard] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [titleVisible, setTitleVisible] = useState(false);
 
   const fetchDashboard = useCallback(async (token: string) => {
     const response = await fetch(`${API_URL}/api/dashboard`, {
@@ -193,6 +194,14 @@ export default function DashboardPage() {
     refreshData(token);
   }, [refreshData]);
 
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => {
+      setTitleVisible(true);
+    });
+
+    return () => cancelAnimationFrame(frame);
+  }, []);
+
   const heatLevels = useMemo(
     () => getHeatLevels(dashboard?.heatmap || []),
     [dashboard?.heatmap]
@@ -229,8 +238,13 @@ export default function DashboardPage() {
       <div className="mx-auto max-w-6xl px-4 py-10">
         <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-stone-500">Dashboard</p>
-            <h1 className="mt-2 text-3xl font-semibold tracking-tight text-stone-900">Your personal command center</h1>
+            <h1
+              className={`mt-2 text-2xl font-semibold tracking-tight text-stone-900 transition-all duration-700 ease-out ${
+                titleVisible ? "translate-y-0 opacity-100" : "translate-y-1 opacity-0"
+              }`}
+            >
+              Your personal command center
+            </h1>
             <p className="mt-2 max-w-2xl text-sm text-stone-600">
            Run your life with clarity, focus, and consistent progress.            </p>
             {loading && <p className="mt-2 text-sm text-stone-500">Loading dashboard...</p>}
