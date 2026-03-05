@@ -96,8 +96,8 @@ export default function AppNavbar() {
 			ref={headerRef}
 			className={`sticky top-0 z-50 transition-all duration-300 ${
 				scrolled
-					? "bg-rose-900/90 backdrop-blur-md shadow-sm border-b border-gray-500/30"
-					: "bg-red-900/90 border-b border-slate-200/50"
+					? "bg-red-900/90 backdrop-blur-md shadow-sm border-b border-gray-500/30"
+					: "bg-red-950 border-b border-slate-200/50"
 			}`}
 		>
 			<div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
