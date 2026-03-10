@@ -7,6 +7,7 @@ import {
   X,
   ArrowRight,
   CheckCircle2,
+  Star,
   Target,
   NotebookPen,
   BellRing,
@@ -18,6 +19,23 @@ import { useEffect, useState } from "react";
 export default function HomePage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const testimonials = [
+    {
+      quote: "SelfOS helped me stay consistent with my goals.",
+      author: "Mia Carter",
+      role: "Frontend Developer",
+    },
+    {
+      quote: "I finally have one calm place for tasks, reminders, and journal notes.",
+      author: "Alex Turner",
+      role: "Product Designer",
+    },
+    {
+      quote: "The daily flow keeps me focused without feeling overwhelmed.",
+      author: "Noah Brooks",
+      role: "Startup Founder",
+    },
+  ];
 
   useEffect(() => {
     let ticking = false;
@@ -232,6 +250,42 @@ export default function HomePage() {
               <h3 className="mt-3 text-sm font-semibold text-stone-900">Progress analytics</h3>
               <p className="mt-1 text-sm text-stone-600">See trends that help you improve your focus over time.</p>
             </article>
+          </div>
+        </section>
+
+        <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+          <div className="rounded-3xl border border-stone-200 bg-white/95 p-6 shadow-sm sm:p-8">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-rose-700">Social proof</p>
+                <h2 className="mt-2 text-2xl font-semibold tracking-tight text-stone-900 sm:text-3xl">
+                  Trusted by productive people worldwide
+                </h2>
+              </div>
+              <div className="inline-flex items-center gap-1 rounded-full border border-amber-200 bg-amber-50 px-4 py-2">
+                {Array.from({ length: 5 }).map((_, index) => (
+                  <Star key={index} className="h-4 w-4 fill-amber-500 text-amber-500" />
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-6 grid gap-4 md:grid-cols-3">
+              {testimonials.map((item) => (
+                <article
+                  key={item.author}
+                  className="rounded-2xl border border-stone-200 bg-linear-to-b from-white to-stone-50 p-5 transition-transform duration-200 hover:-translate-y-0.5"
+                >
+                  <div className="flex items-center gap-1 text-amber-500">
+                    {Array.from({ length: 5 }).map((_, index) => (
+                      <Star key={`${item.author}-${index}`} className="h-3.5 w-3.5 fill-current" />
+                    ))}
+                  </div>
+                  <p className="mt-3 text-sm leading-relaxed text-stone-700">&quot;{item.quote}&quot;</p>
+                  <p className="mt-4 text-sm font-semibold text-stone-900">{item.author}</p>
+                  <p className="text-xs text-stone-500">{item.role}</p>
+                </article>
+              ))}
+            </div>
           </div>
         </section>
 
