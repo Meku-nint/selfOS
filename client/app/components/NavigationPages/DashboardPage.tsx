@@ -149,15 +149,21 @@ const getDynamicMonthLabels = () => {
 
   const labels: { label: string; week: number }[] = [];
   let previousMonth = -1;
+  let previousYear = -1;
 
   for (let week = 0; week < 52; week += 1) {
     const day = new Date(start);
     day.setDate(start.getDate() + week * 7);
     const month = day.getMonth();
+    const year = day.getFullYear();
 
     if (month !== previousMonth) {
-      labels.push({ label: monthNamesShort[month], week });
+      const yearShort = String(year).slice(-2);
+      const shouldShowYear = labels.length === 0 || year !== previousYear || month === 0;
+      const label = shouldShowYear ? `${monthNamesShort[month]} ${yearShort}` : monthNamesShort[month];
+      labels.push({ label, week });
       previousMonth = month;
+      previousYear = year;
     }
   }
 
@@ -447,7 +453,7 @@ export default function DashboardPage() {
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <h2 className="text-lg font-semibold text-stone-900">Yearly focus heatmap</h2>
-              <p className="text-sm text-stone-500">Every day you showed up gets a mark.</p>
+              <p className="text-sm text-stone-500">Last 52 weeks of activity. Every day you showed up gets a mark.</p>
             </div>
             <div className="flex items-center gap-2 text-xs text-stone-500">
               <span>Less</span>
