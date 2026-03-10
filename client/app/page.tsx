@@ -289,28 +289,76 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section id="features" className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <article className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm">
-              <BellRing className="h-5 w-5 text-rose-600" />
-              <h3 className="mt-3 text-sm font-semibold text-stone-900">Smart reminders that keep your day on track.</h3>
-              <p className="mt-1 text-sm text-stone-600">Never miss important actions with simple, timely nudges.</p>
-            </article>
-            <article className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm">
-              <Target className="h-5 w-5 text-amber-600" />
-              <h3 className="mt-3 text-sm font-semibold text-stone-900">Goal tracking</h3>
-              <p className="mt-1 text-sm text-stone-600">Break big goals into small wins you can finish every day.</p>
-            </article>
-            <article className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm">
-              <NotebookPen className="h-5 w-5 text-blue-600" />
-              <h3 className="mt-3 text-sm font-semibold text-stone-900">Daily journal</h3>
-              <p className="mt-1 text-sm text-stone-600">Capture thoughts, energy, and progress in one place.</p>
-            </article>
-            <article className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm">
-              <ChartColumnIncreasing className="h-5 w-5 text-emerald-600" />
-              <h3 className="mt-3 text-sm font-semibold text-stone-900">Progress analytics</h3>
-              <p className="mt-1 text-sm text-stone-600">See trends that help you improve your focus over time.</p>
-            </article>
+        <section id="features" className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+          <div className="relative overflow-hidden rounded-3xl border border-rose-100 bg-linear-to-br from-rose-50 via-white to-amber-50 p-6 sm:p-8">
+            <div className="pointer-events-none absolute -right-16 -top-16 h-44 w-44 rounded-full bg-rose-200/35 blur-3xl" />
+            <div className="pointer-events-none absolute -bottom-20 left-10 h-44 w-44 rounded-full bg-amber-200/35 blur-3xl" />
+
+            <div className="relative flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-rose-700">Core features</p>
+                <h2 className="mt-2 text-2xl font-semibold tracking-tight text-stone-900 sm:text-3xl">
+                  Everything you need to stay focused and finish what matters
+                </h2>
+              </div>
+              <p className="max-w-md text-sm text-stone-600">
+                Built for people who want clarity, consistency, and momentum in one simple workflow.
+              </p>
+            </div>
+
+            <div className="relative mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <article className="group rounded-2xl border border-rose-100 bg-white/95 p-5 shadow-[0_8px_30px_rgba(15,23,42,0.06)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_36px_rgba(15,23,42,0.12)]">
+                <div className="flex items-center justify-between">
+                  <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-rose-100 text-rose-700 transition-colors group-hover:bg-rose-600 group-hover:text-white">
+                    <BellRing className="h-5 w-5" />
+                  </span>
+                  <span className="text-xs font-medium text-rose-400">01</span>
+                </div>
+                <h3 className="mt-4 text-base font-semibold leading-snug text-stone-900">Smart reminders</h3>
+                <p className="mt-2 text-sm leading-relaxed text-stone-600">
+                  Timely nudges that keep your day moving without becoming noise.
+                </p>
+              </article>
+
+              <article className="group rounded-2xl border border-amber-100 bg-white/95 p-5 shadow-[0_8px_30px_rgba(15,23,42,0.06)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_36px_rgba(15,23,42,0.12)]">
+                <div className="flex items-center justify-between">
+                  <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-amber-100 text-amber-700 transition-colors group-hover:bg-amber-500 group-hover:text-white">
+                    <Target className="h-5 w-5" />
+                  </span>
+                  <span className="text-xs font-medium text-amber-500">02</span>
+                </div>
+                <h3 className="mt-4 text-base font-semibold leading-snug text-stone-900">Goal tracking</h3>
+                <p className="mt-2 text-sm leading-relaxed text-stone-600">
+                  Turn big ambitions into daily, achievable actions with clear progress.
+                </p>
+              </article>
+
+              <article className="group rounded-2xl border border-blue-100 bg-white/95 p-5 shadow-[0_8px_30px_rgba(15,23,42,0.06)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_36px_rgba(15,23,42,0.12)]">
+                <div className="flex items-center justify-between">
+                  <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-blue-100 text-blue-700 transition-colors group-hover:bg-blue-600 group-hover:text-white">
+                    <NotebookPen className="h-5 w-5" />
+                  </span>
+                  <span className="text-xs font-medium text-blue-500">03</span>
+                </div>
+                <h3 className="mt-4 text-base font-semibold leading-snug text-stone-900">Daily journal</h3>
+                <p className="mt-2 text-sm leading-relaxed text-stone-600">
+                  Reflect quickly, capture ideas, and build a stronger personal system.
+                </p>
+              </article>
+
+              <article className="group rounded-2xl border border-emerald-100 bg-white/95 p-5 shadow-[0_8px_30px_rgba(15,23,42,0.06)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_36px_rgba(15,23,42,0.12)]">
+                <div className="flex items-center justify-between">
+                  <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700 transition-colors group-hover:bg-emerald-600 group-hover:text-white">
+                    <ChartColumnIncreasing className="h-5 w-5" />
+                  </span>
+                  <span className="text-xs font-medium text-emerald-500">04</span>
+                </div>
+                <h3 className="mt-4 text-base font-semibold leading-snug text-stone-900">Progress analytics</h3>
+                <p className="mt-2 text-sm leading-relaxed text-stone-600">
+                  Visual trends show where you are winning and where to improve next.
+                </p>
+              </article>
+            </div>
           </div>
         </section>
 
