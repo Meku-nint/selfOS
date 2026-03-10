@@ -6,8 +6,9 @@ import {
   Menu,
   X,
   ArrowRight,
-  CheckCircle2,
   Star,
+  ChevronLeft,
+  ChevronRight,
   Target,
   NotebookPen,
   BellRing,
@@ -19,6 +20,17 @@ import { useEffect, useState } from "react";
 export default function HomePage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const demoImages = [
+    {
+      src: "/demo-screen-1.svg",
+      alt: "SelfOS dashboard preview",
+    },
+    {
+      src: "/demo-screen-2.svg",
+      alt: "SelfOS workflow preview",
+    },
+  ];
   const testimonials = [
     {
       quote: "SelfOS helped me stay consistent with my goals.",
@@ -58,8 +70,26 @@ export default function HomePage() {
     };
   }, []);
 
+  useEffect(() => {
+    const intervalId = window.setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % demoImages.length);
+    }, 3500);
+
+    return () => {
+      window.clearInterval(intervalId);
+    };
+  }, [demoImages.length]);
+
   function closeMenu() {
     setIsMenuOpen(false);
+  }
+
+  function goToPreviousSlide() {
+    setCurrentSlide((prev) => (prev === 0 ? demoImages.length - 1 : prev - 1));
+  }
+
+  function goToNextSlide() {
+    setCurrentSlide((prev) => (prev + 1) % demoImages.length);
   }
 
   return (
@@ -199,30 +229,61 @@ export default function HomePage() {
               </div>
             </div>
 
-            <div className="rounded border-2 border-slate-200 bg-white p-6 ">
-              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-stone-500">Today snapshot</p>
-              <div className="mt-5 space-y-4">
-                <div className="flex items-center justify-between rounded-xl border border-stone-200 bg-white px-4 py-3">
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-emerald-600" />
-                    <span className="text-sm text-stone-700">Tasks completed</span>
-                  </div>
-                  <span className="text-sm font-semibold text-stone-900">7</span>
+            <div className="rounded-2xl border-2 border-slate-200 bg-white p-4 shadow-sm sm:p-5">
+              <div className="flex items-center justify-between">
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-stone-500">Product demo</p>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={goToPreviousSlide}
+                    aria-label="Previous demo image"
+                    className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-stone-300 bg-white text-stone-700 transition-colors hover:bg-stone-100"
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={goToNextSlide}
+                    aria-label="Next demo image"
+                    className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-stone-300 bg-white text-stone-700 transition-colors hover:bg-stone-100"
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                  </button>
                 </div>
-                <div className="flex items-center justify-between rounded-xl border border-stone-200 bg-white px-4 py-3">
-                  <div className="flex items-center gap-2">
-                    <Target className="h-4 w-4 text-amber-600" />
-                    <span className="text-sm text-stone-700">Top priorities</span>
-                  </div>
-                  <span className="text-sm font-semibold text-stone-900">3</span>
+              </div>
+
+              <div className="mt-4 overflow-hidden rounded-xl border border-stone-200 bg-stone-50 p-2">
+                <div
+                  className="flex gap-4 transition-transform duration-500 ease-out"
+                  style={{ transform: `translateX(calc(-${currentSlide} * (100% + 1rem)))` }}
+                >
+                  {demoImages.map((image) => (
+                    <div key={image.src} className="min-w-full overflow-hidden rounded-lg bg-white">
+                      <Image
+                        src={image.src}
+                        alt={image.alt}
+                        width={1200}
+                        height={760}
+                        className="h-60 w-full object-cover sm:h-70"
+                        priority
+                      />
+                    </div>
+                  ))}
                 </div>
-                <div className="flex items-center justify-between rounded-xl border border-stone-200 bg-white px-4 py-3">
-                  <div className="flex items-center gap-2">
-                    <NotebookPen className="h-4 w-4 text-blue-600" />
-                    <span className="text-sm text-stone-700">Journal streak</span>
-                  </div>
-                  <span className="text-sm font-semibold text-stone-900">12 days</span>
-                </div>
+              </div>
+
+              <div className="mt-3 flex items-center justify-center gap-2">
+                {demoImages.map((image, index) => (
+                  <button
+                    key={image.src}
+                    type="button"
+                    onClick={() => setCurrentSlide(index)}
+                    aria-label={`Go to demo image ${index + 1}`}
+                    className={`h-2.5 rounded-full transition-all ${
+                      currentSlide === index ? "w-6 bg-stone-900" : "w-2.5 bg-stone-300 hover:bg-stone-400"
+                    }`}
+                  />
+                ))}
               </div>
             </div>
           </div>
