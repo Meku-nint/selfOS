@@ -77,7 +77,7 @@ export default function HomePage() {
             </Link>
             <Link
               href="/login"
-              className="inline-flex items-center gap-2 rounded-lg bg-white px-4 py-2.5 text-sm font-semibold text-red-950 transition-colors hover:bg-red-50"
+              className="inline-flex items-center gap-2 rounded-lg bg-black px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-stone-800 "
             >
               Get Started
               <ArrowRight className="h-4 w-4" />
@@ -181,24 +181,24 @@ export default function HomePage() {
               </div>
             </div>
 
-            <div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
+            <div className="rounded border-2 border-slate-200 bg-white p-6 ">
               <p className="text-xs font-semibold uppercase tracking-[0.14em] text-stone-500">Today snapshot</p>
               <div className="mt-5 space-y-4">
-                <div className="flex items-center justify-between rounded-xl border border-stone-200 bg-stone-50 px-4 py-3">
+                <div className="flex items-center justify-between rounded-xl border border-stone-200 bg-white px-4 py-3">
                   <div className="flex items-center gap-2">
                     <CheckCircle2 className="h-4 w-4 text-emerald-600" />
                     <span className="text-sm text-stone-700">Tasks completed</span>
                   </div>
                   <span className="text-sm font-semibold text-stone-900">7</span>
                 </div>
-                <div className="flex items-center justify-between rounded-xl border border-stone-200 bg-stone-50 px-4 py-3">
+                <div className="flex items-center justify-between rounded-xl border border-stone-200 bg-white px-4 py-3">
                   <div className="flex items-center gap-2">
                     <Target className="h-4 w-4 text-amber-600" />
                     <span className="text-sm text-stone-700">Top priorities</span>
                   </div>
                   <span className="text-sm font-semibold text-stone-900">3</span>
                 </div>
-                <div className="flex items-center justify-between rounded-xl border border-stone-200 bg-stone-50 px-4 py-3">
+                <div className="flex items-center justify-between rounded-xl border border-stone-200 bg-white px-4 py-3">
                   <div className="flex items-center gap-2">
                     <NotebookPen className="h-4 w-4 text-blue-600" />
                     <span className="text-sm text-stone-700">Journal streak</span>
