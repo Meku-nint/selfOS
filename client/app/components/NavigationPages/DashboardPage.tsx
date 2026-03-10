@@ -21,20 +21,7 @@ function normalizeBaseUrl(rawUrl: string | undefined, fallbackUrl: string, proto
 
 const API_URL = normalizeBaseUrl(process.env.NEXT_PUBLIC_API_URL, "http://localhost:4000", "https");
 
-const monthLabels = [
-  { label: "Jan", week: 0 },
-  { label: "Feb", week: 4 },
-  { label: "Mar", week: 8 },
-  { label: "Apr", week: 13 },
-  { label: "May", week: 17 },
-  { label: "Jun", week: 21 },
-  { label: "Jul", week: 26 },
-  { label: "Aug", week: 30 },
-  { label: "Sep", week: 35 },
-  { label: "Oct", week: 39 },
-  { label: "Nov", week: 43 },
-  { label: "Dec", week: 48 },
-];
+const monthNamesShort = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 type DashboardTask = {
   id: string;
@@ -132,6 +119,13 @@ const formatTime = (value: string | null) => {
   });
 };
 
+const toLocalDateKey = (date: Date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
+
 const getHeatLevels = (heatmap: HeatmapEntry[]) => {
   const map = new Map(heatmap.map((item) => [item.date, item.score]));
   const levels: number[] = [];
@@ -140,12 +134,34 @@ const getHeatLevels = (heatmap: HeatmapEntry[]) => {
   for (let i = 363; i >= 0; i -= 1) {
     const day = new Date(today);
     day.setDate(today.getDate() - i);
-    const key = day.toISOString().slice(0, 10);
+    const key = toLocalDateKey(day);
     const score = Math.min(1, Math.max(0, map.get(key) || 0));
     levels.push(Math.min(4, Math.floor(score * 5)));
   }
 
   return levels;
+};
+
+const getDynamicMonthLabels = () => {
+  const today = new Date();
+  const start = new Date(today);
+  start.setDate(today.getDate() - 363);
+
+  const labels: { label: string; week: number }[] = [];
+  let previousMonth = -1;
+
+  for (let week = 0; week < 52; week += 1) {
+    const day = new Date(start);
+    day.setDate(start.getDate() + week * 7);
+    const month = day.getMonth();
+
+    if (month !== previousMonth) {
+      labels.push({ label: monthNamesShort[month], week });
+      previousMonth = month;
+    }
+  }
+
+  return labels;
 };
 
 export default function DashboardPage() {
@@ -206,6 +222,7 @@ export default function DashboardPage() {
     () => getHeatLevels(dashboard?.heatmap || []),
     [dashboard?.heatmap]
   );
+  const monthLabels = useMemo(() => getDynamicMonthLabels(), []);
 
   const todayTasks = useMemo(() => dashboard?.todayTasks || [], [dashboard?.todayTasks]);
   const sortedTodayTasks = useMemo(() => {
