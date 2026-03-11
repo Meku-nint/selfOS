@@ -1,14 +1,28 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="SelfOS icon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="SelfOS PWA icon">
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#292524"/>
-      <stop offset="100%" stop-color="#0c0a09"/>
+    <linearGradient id="selfosBg512" x1="54" y1="32" x2="466" y2="482" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#991b1b"/>
+      <stop offset="1" stop-color="#1c1917"/>
     </linearGradient>
+    <radialGradient id="selfosGlow512" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(142 106) rotate(38) scale(390)">
+      <stop offset="0" stop-color="#fecaca" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#fecaca" stop-opacity="0"/>
+    </radialGradient>
   </defs>
-  <rect width="512" height="512" rx="116" fill="url(#bg)"/>
-  <rect x="72" y="72" width="368" height="368" rx="72" fill="#fafaf9" opacity="0.96"/>
-  <path d="M141 347V171h39l51 99 50-99h40v176h-38V246l-45 88h-18l-45-88v101h-34z" fill="#1c1917"/>
-  <path d="M322 325l42-75h-33v-38h67v31l-42 82h42v37h-76v-37z" fill="#059669"/>
-  <rect x="108" y="390" width="292" height="16" rx="8" fill="#d6d3d1"/>
-  <circle cx="416" cy="398" r="10" fill="#10b981"/>
+
+  <rect width="512" height="512" rx="116" fill="url(#selfosBg512)"/>
+  <rect width="512" height="512" rx="116" fill="url(#selfosGlow512)"/>
+
+  <circle cx="256" cy="256" r="144" stroke="#fff" stroke-opacity="0.2" stroke-width="22" fill="none"/>
+
+  <path
+    d="M154 174C154 130 188 102 236 102H312C358 102 392 132 392 172C392 216 357 248 312 256H221C180 263 154 292 154 333C154 379 191 410 242 410H338"
+    fill="none"
+    stroke="#fef2f2"
+    stroke-width="38"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+
+  <path d="M264 286L301 323L368 256" fill="none" stroke="#86efac" stroke-width="28" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
