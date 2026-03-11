@@ -7,11 +7,27 @@ import { Menu } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { clearAuthToken, getAuthToken } from "../lib/auth";
 
+function normalizeBaseUrl(rawUrl: string | undefined, fallbackUrl: string, protocol: "http" | "https" = "https") {
+	const value = (rawUrl || "").trim();
+	const fallback = (fallbackUrl || "").trim();
+	const resolved = value || fallback;
+
+	if (!resolved) return "";
+
+	const withProtocol = /^https?:\/\//i.test(resolved)
+		? resolved
+		: `${protocol}://${resolved}`;
+
+	return withProtocol.replace(/\/+$/, "");
+}
+
+const API_URL = normalizeBaseUrl(process.env.NEXT_PUBLIC_API_URL, "http://localhost:4000", "https");
+
 const NAV_ITEMS = [
 	{ href: "/dashboard", label: "Dashboard", icon: "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" },
 	{ href: "/journal", label: "Journal", icon: "M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" },
 	{ href: "/profile", label: "Profile", icon: "M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" },
-	{ href: "/reminders", label: "Set reminder", badge: 3, icon: "M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" },
+	{ href: "/reminders", label: "Set reminder", icon: "M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" },
 	{ href: "/todo", label: "To-do", icon: "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" },
 	{ href: "/goals", label: "Goals", icon: "M13 10V3L4 14h7v7l9-11h-7z" },
 ];
@@ -23,6 +39,7 @@ export default function AppNavbar() {
 	const [open, setOpen] = useState(false);
 	const [token, setToken] = useState<string | null>(null);
 	const [scrolled, setScrolled] = useState(false);
+	const [reminderCount, setReminderCount] = useState(0);
 
 	useEffect(() => {
 		if (typeof window === "undefined") return;
@@ -48,6 +65,42 @@ export default function AppNavbar() {
 			window.removeEventListener("scroll", handleScroll);
 		};
 	}, [pathname]);
+
+	useEffect(() => {
+		if (!token) {
+			setReminderCount(0);
+			return;
+		}
+
+		const controller = new AbortController();
+
+		const fetchReminderCount = async () => {
+			try {
+				const response = await fetch(`${API_URL}/api/reminders`, {
+					headers: {
+						Authorization: `Bearer ${token}`
+					},
+					signal: controller.signal
+				});
+
+				if (!response.ok) {
+					setReminderCount(0);
+					return;
+				}
+
+				const data = (await response.json()) as unknown;
+				setReminderCount(Array.isArray(data) ? data.length : 0);
+			} catch (error) {
+				if ((error as Error).name !== "AbortError") {
+					setReminderCount(0);
+				}
+			}
+		};
+
+		fetchReminderCount();
+
+		return () => controller.abort();
+	}, [token, pathname]);
 
 	useEffect(() => {
 		if (!open) return;
@@ -85,6 +138,7 @@ export default function AppNavbar() {
 	const handleLogout = () => {
 		clearAuthToken();
 		setToken(null);
+		setReminderCount(0);
 		setOpen(false);
 		router.push("/");
 	};
@@ -118,6 +172,7 @@ export default function AppNavbar() {
 					<nav className="hidden md:flex md:items-center md:gap-1 ">
 						{NAV_ITEMS.map((item) => {
 							const isActive = pathname === item.href;
+							const badgeCount = item.href === "/reminders" ? reminderCount : 0;
 							return (
 								<Link
 									key={item.href}
@@ -140,9 +195,9 @@ export default function AppNavbar() {
 										<path strokeLinecap="round" strokeLinejoin="round" d={item.icon} />
 									</svg>
 									<span>{item.label}</span>
-									{item.badge ? (
+									{badgeCount > 0 ? (
 										<span className="inline-flex min-w-5 items-center justify-center rounded-full bg-red-600 px-1.5 text-[10px] font-medium leading-5 text-white">
-											{item.badge}
+											{badgeCount}
 										</span>
 									) : null}
 									<svg
@@ -213,6 +268,7 @@ export default function AppNavbar() {
 						<div className="flex flex-col gap-1">
 							{NAV_ITEMS.map((item) => {
 								const isActive = pathname === item.href;
+								const badgeCount = item.href === "/reminders" ? reminderCount : 0;
 								return (
 									<Link
 										key={item.href}
@@ -234,9 +290,9 @@ export default function AppNavbar() {
 											<path strokeLinecap="round" strokeLinejoin="round" d={item.icon} />
 										</svg>
 										<span className="flex-1 font-medium">{item.label}</span>
-										{item.badge ? (
+										{badgeCount > 0 ? (
 											<span className="inline-flex min-w-5 items-center justify-center rounded-full bg-red-600 px-1.5 text-[10px] font-medium leading-5 text-white">
-												{item.badge}
+												{badgeCount}
 											</span>
 										) : null}
 										<svg
