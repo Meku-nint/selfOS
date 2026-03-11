@@ -125,7 +125,7 @@ export default function AppNavbar() {
 									className={`group relative flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
 										isActive
 											? "text-slate-900 bg-slate-100"
-											: "text-slate-700 hover:text-slate-900 hover:bg-slate-50"
+											: "text-white hover:text-slate-900 hover:bg-slate-50"
 									}`}
 								>
 									<svg
@@ -170,7 +170,7 @@ export default function AppNavbar() {
 						<button
 							type="button"
 							onClick={handleLogout}
-							className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-light text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-all"
+							className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-light text-white hover:text-slate-900 hover:bg-slate-50 transition-all"
 						>
 							<svg
 								className="h-4 w-4"

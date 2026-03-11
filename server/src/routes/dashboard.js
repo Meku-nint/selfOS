@@ -2,6 +2,8 @@ import express from "express";
 import { prisma } from "../config/database.js";
 
 const router = express.Router();
+const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
+const GROQ_MODEL = process.env.GROQ_MODEL || "llama-3.3-70b-versatile";
 
 function startOfDay(date) {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate());
@@ -164,6 +166,66 @@ router.get("/", async (req, res) => {
     });
   } catch (error) {
     console.error("Get dashboard error:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+router.post("/coach", async (req, res) => {
+  try {
+    const apiKey = process.env.GROQ_API_KEY;
+    if (!apiKey) {
+      return res.status(500).json({ message: "AI coach is not configured on the server." });
+    }
+
+    const query = typeof req.body?.query === "string" ? req.body.query.trim() : "";
+    if (!query) {
+      return res.status(400).json({ message: "Query is required." });
+    }
+
+    if (query.length > 1000) {
+      return res.status(400).json({ message: "Query is too long. Please keep it under 1000 characters." });
+    }
+
+    const response = await fetch(GROQ_API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`
+      },
+      body: JSON.stringify({
+        model: GROQ_MODEL,
+        temperature: 0.7,
+        max_tokens: 300,
+        messages: [
+          {
+            role: "system",
+            content:
+              "You are SelfOS AI Coach. Give concise, practical and supportive advice for productivity, focus, journaling and routines. Keep responses under 8 bullet points unless asked for more detail."
+          },
+          {
+            role: "user",
+            content: query
+          }
+        ]
+      })
+    });
+
+    if (!response.ok) {
+      const errorBody = await response.text();
+      console.error("Groq API error:", response.status, errorBody);
+      return res.status(502).json({ message: "AI coach is temporarily unavailable." });
+    }
+
+    const data = await response.json();
+    const message = data?.choices?.[0]?.message?.content;
+
+    if (!message || typeof message !== "string") {
+      return res.status(502).json({ message: "AI coach returned an empty response." });
+    }
+
+    res.json({ response: message.trim() });
+  } catch (error) {
+    console.error("AI coach error:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
