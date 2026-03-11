@@ -68,6 +68,7 @@ export default function AppNavbar() {
 
 	useEffect(() => {
 		if (!token) {
+			// eslint-disable-next-line react-hooks/set-state-in-effect
 			setReminderCount(0);
 			return;
 		}
