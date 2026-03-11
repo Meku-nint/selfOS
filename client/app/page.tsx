@@ -35,7 +35,7 @@ export default function HomePage() {
     {
       quote: "SelfOS helped me stay consistent with my goals.",
       author: "Mia Carter",
-      role: "Frontend Developer",
+      role: "Content Creator",
     },
     {
       quote: "I finally have one calm place for tasks, reminders, and journal notes.",
