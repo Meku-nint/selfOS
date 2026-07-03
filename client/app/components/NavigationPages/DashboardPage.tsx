@@ -147,13 +147,21 @@ const getDynamicMonthLabels = () => {
   const start = new Date(today);
   start.setDate(today.getDate() - 363);
 
-  const labels: { label: string; week: number }[] = [];
+  const labels: { label: string; colStart: number; colSpan: number }[] = [];
   let previousMonth = -1;
   let previousYear = -1;
 
-  for (let week = 0; week < 52; week += 1) {
+  // Total days = 364 (52 weeks * 7 days)
+  const totalDays = 364;
+  // Calculate which column (week) each day falls into
+  // Days are laid out column-major: column 0 has days 0-6, column 1 has days 7-13, etc.
+  const totalCols = Math.ceil(totalDays / 7);
+
+  for (let col = 0; col < totalCols; col += 1) {
+    // The first day in this column
+    const dayIndex = col * 7;
     const day = new Date(start);
-    day.setDate(start.getDate() + week * 7);
+    day.setDate(start.getDate() + dayIndex);
     const month = day.getMonth();
     const year = day.getFullYear();
 
@@ -161,10 +169,16 @@ const getDynamicMonthLabels = () => {
       const yearShort = String(year).slice(-2);
       const shouldShowYear = labels.length === 0 || year !== previousYear || month === 0;
       const label = shouldShowYear ? `${monthNamesShort[month]} ${yearShort}` : monthNamesShort[month];
-      labels.push({ label, week });
+      labels.push({ label, colStart: col + 1, colSpan: 1 }); // colStart is 1-indexed for CSS grid
       previousMonth = month;
       previousYear = year;
     }
+  }
+
+  // Calculate colSpan for each label: distance to the next label (or end of grid)
+  for (let i = 0; i < labels.length; i += 1) {
+    const nextColStart = i + 1 < labels.length ? labels[i + 1].colStart : totalCols + 1;
+    labels[i].colSpan = nextColStart - labels[i].colStart;
   }
 
   return labels;
@@ -509,26 +523,43 @@ export default function DashboardPage() {
           </div>
 
           <div className="mt-6 overflow-x-auto">
-            <div className="min-w-180 grid">
-              <div className="mb-2 grid grid-cols-[repeat(52,1fr)] gap-1 text-[11px] text-stone-400">
-                {monthLabels.map((month) => (
-                  <span
-                    key={month.label}
-                    className="col-span-4 text-stone-500"
-                    style={{ gridColumnStart: month.week + 1 }}
-                  >
-                    {month.label}
-                  </span>
-                ))}
-              </div>
-              <div className="flex items-start gap-3">
-                <div className="grid grid-flow-col grid-rows-7 gap-1">
-                  {heatLevels.map((level, index) => (
-                    <span key={`heat-${index}`} className={`h-3 w-3 rounded-sm ${heatColor(level)}`} />
-                  ))}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(52, 14px)', gap: '0 3px' }}>
+              {/* Month labels row */}
+              {monthLabels.map((month) => (
+                <span
+                  key={month.label}
+                  className="text-[11px] text-stone-500 truncate"
+                  style={{
+                    gridColumn: `${month.colStart} / span ${month.colSpan}`,
+                    gridRow: 1,
+                  }}
+                >
+                  {month.label}
+                </span>
+              ))}
+
+              {/* Heatmap cells: each column is a week (7 day-cells stacked vertically) */}
+              {Array.from({ length: 52 }).map((_, colIndex) => (
+                <div
+                  key={`week-${colIndex}`}
+                  className="flex flex-col gap-[3px]"
+                  style={{
+                    gridColumn: colIndex + 1,
+                    gridRow: 2,
+                  }}
+                >
+                  {Array.from({ length: 7 }).map((_, rowIndex) => {
+                    const dayIndex = colIndex * 7 + rowIndex;
+                    const level = dayIndex < heatLevels.length ? heatLevels[dayIndex] : 0;
+                    return (
+                      <span
+                        key={`heat-${dayIndex}`}
+                        className={`h-[14px] w-[14px] rounded-sm ${heatColor(level)}`}
+                      />
+                    );
+                  })}
                 </div>
-                <div className="text-xs font-semibold text-stone-400">{currentYear}</div>
-              </div>
+              ))}
             </div>
           </div>
         </section>
