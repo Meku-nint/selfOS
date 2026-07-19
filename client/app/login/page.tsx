@@ -196,23 +196,7 @@ function LoginPageContent() {
         <div className="absolute -bottom-40 -left-40 h-96 w-96 rounded-full bg-stone-200/30 blur-3xl" />
       </div>
 
-      <div className="relative mx-auto grid w-full max-w-5xl items-center gap-4 sm:gap-6 lg:grid-cols-[1fr_1.05fr]">
-        <aside className="hidden rounded-3xl border border-stone-200 bg-stone-900 p-8 text-stone-100 shadow-xl lg:block">
-          <p className="inline-flex rounded-full border border-stone-700 px-3 py-1 text-xs tracking-wide text-stone-300">
-            Welcome to selfOS
-          </p>
-          <h2 className="mt-5 text-3xl font-semibold leading-tight tracking-tight">A calmer way to run your day.</h2>
-          <p className="mt-4 text-sm leading-relaxed text-stone-300">
-            Keep tasks, goals, reminders, journaling, and progress in one focused system built for consistency.
-          </p>
-          <ul className="mt-8 space-y-3 text-sm text-stone-200">
-            <li>• Plan clearly with daily priorities</li>
-            <li>• Track momentum with analytics</li>
-            <li>• Reflect and improve through journaling</li>
-          </ul>
-        </aside>
-
-        <div className="w-full">
+        <div className="w-4/7 max-w-md mx-auto">
           <div className="rounded-3xl border border-stone-200 bg-white p-4 shadow-xl sm:p-8">
             <div className="mb-4 text-center sm:mb-6">
               <h1 className="text-3xl font-semibold tracking-tight text-stone-900">selfOS</h1>
@@ -437,7 +421,6 @@ function LoginPageContent() {
               </form>
             )}
           </div>
-        </div>
 
       </div>
     </div>
