@@ -196,7 +196,7 @@ function LoginPageContent() {
         <div className="absolute -bottom-40 -left-40 h-96 w-96 rounded-full bg-stone-200/30 blur-3xl" />
       </div>
 
-        <div className="w-4/7 max-w-md mx-auto">
+        <div className=" w-full sm:max-w-md">
           <div className="rounded-3xl border border-stone-200 bg-white p-4 shadow-xl sm:p-8">
             <div className="mb-4 text-center sm:mb-6">
               <h1 className="text-3xl font-semibold tracking-tight text-stone-900">selfOS</h1>
